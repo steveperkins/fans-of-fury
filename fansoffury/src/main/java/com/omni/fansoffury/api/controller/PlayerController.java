@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.omni.fansoffury.device.DeviceService;
 import com.omni.fansoffury.headset.service.HeadsetService;
 import com.omni.fansoffury.model.Player;
+import com.omni.fansoffury.model.device.Device;
 import com.omni.fansoffury.model.json.JsonResponse;
 import com.omni.fansoffury.player.PlayerService;
 import com.sperkins.mindwave.event.EventType;
@@ -50,7 +51,6 @@ public class PlayerController {
 		return response;
 	}
 	
-	
 	@RequestMapping(value = "/api/player/{playerId}", method = RequestMethod.GET)
 	public JsonResponse getPlayerById(@PathVariable("playerId") String playerId) {
 		logger.debug("GET to /api/player/{}", playerId);
@@ -67,13 +67,20 @@ public class PlayerController {
 	public JsonResponse createPlayer(@PathVariable("playerId") String playerId) {
 		logger.debug("PUT to /api/player/{}", playerId);
 		
-		Player player = new Player();
-		player.setId(playerId);
-		
 		JsonResponse response = new JsonResponse();
-		player = playerService.createPlayer(player);
-		response.setObject(player);
 		response.setStatus("success");
+		
+		Player existingPlayer = playerService.getPlayer(playerId);
+		if(null != existingPlayer) {
+			response.setObject(existingPlayer);
+		} else {
+			Player player = new Player();
+			player.setId(playerId);
+		
+			player = playerService.createPlayer(player);
+			
+			response.setObject(player);
+		}
 		
 		return response;
 	}
@@ -85,12 +92,8 @@ public class PlayerController {
 		
 		try {
 			Player player = playerService.getPlayer(playerId);
-			if(null == player) {
-				player = new Player();
-				player.setId(playerId);
-				playerService.createPlayer(player);
-				// TODO Persist player info
-			}
+			if(null == player) throw new IllegalArgumentException("Player " + playerId + " does not exist!");
+			
 			player.setMeasurementType(measurementType);
 			headsetService.mapHeadsetToPlayer(player, headsetService.getHeadset(headsetId));
 			response.setStatus("success");
@@ -111,7 +114,12 @@ public class PlayerController {
 		
 		try {
 			Player player = playerService.getPlayer(playerId);
-			playerService.mapPlayerToDevice(player, deviceService.getDevice(deviceId));
+			if(null == player) throw new IllegalArgumentException("Player " + playerId + " does not exist!");
+			
+			Device device = deviceService.getDevice(deviceId);
+			if(null == device) throw new IllegalArgumentException("Device" + deviceId + " does not exist!");
+			
+			playerService.mapPlayerToDevice(player, device);
 			response.setStatus("success");
 		} catch(Exception e) {
 			response.setStatus("error");

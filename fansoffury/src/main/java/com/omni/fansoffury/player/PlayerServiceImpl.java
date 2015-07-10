@@ -58,7 +58,12 @@ public class PlayerServiceImpl implements PlayerService {
 
 	@Override
 	public Player createPlayer(Player player) {
-		players.add(player);
+		Player existingPlayer = getPlayer(player.getId());
+		if(null != existingPlayer) {
+			player = existingPlayer;
+		} else {
+			players.add(player);
+		}
 		return player;
 	}
 
