@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Fans of Fury: Manage Game</title>
+	<style type="text/css">
+		#connect-container {
+			float: left;
+			width: 400px
+		}
+		#connect-container div {
+			padding: 5px;
+		}
+		#console-container {
+			float: left;
+			margin-left: 15px;
+			width: 800px;
+			height: 800px;
+		}
+		#console {
+			border: 1px solid #CCCCCC;
+			border-right-color: #999999;
+			border-bottom-color: #999999;
+			height: 170px;
+			overflow-y: scroll;
+			padding: 5px;
+			width: 100%;
+			height: 800px;
+		}
+		#console p {
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+	
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
+	Javascript and reload this page!</h2></noscript>
+<div>
+	<div id="connect-container">
+	
+		<div>
+			<p>Click the Quick Setup button to send all the calls necessary to start listening to websocket events as a fan controller (Raspberry Pi with motors hooked up) and a score listener (e.g. scoreboard display).</p>
+			<button id="quickSetup" onclick="quickSetup();">Quick Setup</button>
+			<div>
+				<table>
+					<tr>
+						<td>Player 1 headset ID:</td><td>74E543D575B0 (#1)</td>
+					</tr>
+					<tr>
+						<td>Player 1 device ID:</td><td>0</td>
+					</tr>
+					<tr>
+						<td>Player 1 measurement type:</td><td>ATTENTION</td>
+					</tr>
+					<tr>
+						<td>Player 2 headset ID</td><td>20689D4C0A08 (#3)</td>
+					</tr>
+					<tr>
+						<td>Player 2 device ID</td><td>1</td>
+					</tr>
+					<tr>
+						<td>Player 2 measurement type:</td><td>ATTENTION</td>
+					</tr>
+					<tr>
+						<td>Score websocket URL:</td><td>/ws/score</td>
+					</tr>
+					<tr>
+						<td>Fan controller websocket URL:</td><td>/ws/fancontroller</td>
+					</tr>
+				</table>
+			</div>
+			
+				<ul>The order of operations is:
+					<li>Connect score websocket listener</li>
+					<li>Connect fan controller websocket listener</li>
+					<li>Send message through fan controller websocket defining the devices available on the game board</li>
+					<li>Send a PUT request to create Player 1 with the QR code ID "0"</li>
+					<li>Map Player 1 to headset ID 74E543D575B0</li>
+					<li>Map Player 1 to device (fan/side of the table) ID 0</li>
+					<li>Send a PUT request to create Player 2 with the given QR code ID "1"</li>
+					<li>Map Player 2 to headset ID 20689D4C0A08</li>
+					<li>Map Player 2 to device (fan/side of the table) ID 1</li>
+					<li>Connect EEG websocket listener</li>
+				</ul>
+		</div>
+		
+		<div>
+			<h2>Fan Controller Websocket</h2>
+			<button id="connectFanControllerListener" onclick="connectFanControllerListener();">Connect</button>
+			<button id="disconnectFanControllerListener" disabled="disabled" onclick="disconnectFanControllerListener();">Disconnect</button>
+			<p>Fake headset events are generated every second. You can disconnect this socket listener if the messages pollute your output.</p>
+		</div>
+		
+		<div>
+			<h2>Score Websocket</h2>
+			<button id="connectScoreListener" onclick="connectScoreListener();">Connect</button>
+			<button id="disconnectScoreListener" disabled="disabled" onclick="disconnectScoreListener();">Disconnect</button>
+			<p>Scores are incremented every three seconds.</p>
+		</div>
+		
+		<div>
+			<h2>EEG Websocket</h2>
+			<button id="connectEegListener" onclick="connectEegListener();">Connect</button>
+			<button id="disconnectEegListener" disabled="disabled" onclick="disconnectEegListener();">Disconnect</button>
+			<p>Fake headset events are generated every second. You can disconnect this socket listener if the messages pollute your output.</p>
+		</div>
+		
+		<h2>Map player IDs to headset IDs</h2>
+		<p>A player has to be mapped to an EEG headset ID and a device (e.g. a fan) ID.</p>		
+		<button id="mapPlayer0ToHeadset1" class="messageButton" onclick="mapPlayer0ToHeadset1();">Map player 0 to headset 1</button>
+		<button id="mapPlayer1ToHeadset3" class="messageButton" onclick="mapPlayer1ToHeadset3();">Map player 1 to headset 3</button>
+
+		<div id="mapPlayerIdToHeadsetId">
+			Player ID: <textarea class="playerId" style="width: 350px">0</textarea>
+			Headset ID: <textarea class="headsetId" style="width: 350px">74E543D575B0</textarea>
+			<button id="mapPlayerIdToHeadsetIdButton" class="messageButton" onclick="mapPlayerIdToHeadsetId();">Go</button>
+		</div>
+		
+		<h2>Map player ID to device ID</h2>		
+		<div id="mapPlayerIdToDeviceId">
+			Player ID: <textarea class="playerId" style="width: 350px">0</textarea>
+			Device ID: <textarea class="deviceId" style="width: 350px">0</textarea>
+			<button id="mapPlayerIdToDeviceIdButton" class="messageButton" onclick="mapPlayerIdToDeviceId();">Go</button>
+		</div>
+		
+	</div>
+	<div id="console-container">
+		<div id="console"></div>
+	</div>
+</div>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/sockjs.min.js"></script>
+<script type="text/javascript">
+	var fanControllerConnected = false;
+	
+	function quickSetup() {
+		createPlayer("0");
+		createPlayer("1");
+		connectScoreListener();
+		connectFanControllerListener();
+		var fanControllerSetupInterval = setInterval(function() {
+			// We have to wait until the fan controller's devices have been registered
+			if(fanControllerConnected) {
+				clearInterval(fanControllerSetupInterval);
+				
+				mapPlayer0ToHeadset1();
+				mapPlayer1ToHeadset2();
+				
+				connectEegListener();
+				log("Quick Setup done");
+			}
+		}, 100);
+	}
+
+
+	var fanControllerWs = null;
+	function connectFanControllerListener() {
+		var target = "/ws/fancontroller";
+		fanControllerWs = new SockJS(target);
+		fanControllerWs.onopen = function () {
+			log('Info: /ws/fancontroller WebSocket connection opened.');
+			fanControllerListenerConnected(true);
+			
+			// Tell the fan controller we are a device controller with two fans, IDs "0" and "1", so players can be mapped to them
+			// This object is analogous to the DeviceControllerRegistrationEvent Java object
+			var event = {
+					messageType: "DEVICE_CONTROLLER_REGISTRATION",
+					deviceController: {
+						id: "0",
+						devices: [{
+							id: "0",
+							type: "fan",
+							minInputValue: 9.0,
+							maxInputValue: 15.0
+						},
+						{
+							id: "1",
+							type: "fan",
+							minInputValue: 9.0,
+							maxInputValue: 15.0
+						}]
+					}
+			}
+			
+			sendWsMessage(fanControllerWs, JSON.stringify(event));
+			fanControllerConnected = true;
+		};
+		fanControllerWs.onmessage = function (event) {
+			log('/ws/fancontroller Received: ' + event.data);
+		};
+		fanControllerWs.onclose = function () {
+			log('Info: /ws/fancontroller WebSocket connection closed.');
+		};
+	}
+	
+	function disconnectFanControllerListener() {
+		if (fanControllerWs != null) {
+			fanControllerWs.close();
+			fanControllerWs = null;
+		}
+		
+		fanControllerListenerConnected(false);
+	}
+	
+	function fanControllerListenerConnected(connected) {
+		$("#disconnectFanControllerListener").prop('disabled', !connected);
+		$("#connectFanControllerListener").prop('disabled', connected);
+	}
+	
+	var scoreWs = null;
+	function connectScoreListener() {
+		var target = "/ws/score";
+		scoreWs = new SockJS(target);
+		scoreWs.onopen = function () {
+			log('Info: /ws/score WebSocket connection opened.');
+			scoreListenerConnected(true);
+		};
+		scoreWs.onmessage = function (event) {
+			log('/ws/score Received: ' + event.data);
+		};
+		scoreWs.onclose = function () {
+			log('Info: /ws/score WebSocket connection closed.');
+		};
+	}
+	function disconnectScoreListener() {
+		if (scoreWs != null) {
+			scoreWs.close();
+			scoreWs = null;
+		}
+		scoreListenerConnected(false);
+	}
+	
+	function scoreListenerConnected(connected) {
+		$("#disconnectScoreListener").prop('disabled', !connected);
+		$("#connectScoreListener").prop('disabled', connected);
+	}
+	
+	var eegWs = null;
+	function connectEegListener() {
+		var target = "/ws/eeg";
+		eegWs = new SockJS(target);
+		eegWs.onopen = function () {
+			log('Info: /ws/eeg WebSocket connection opened.');
+			eegListenerConnected(true);
+		};
+		eegWs.onmessage = function (event) {
+			log('/ws/eeg Received: ' + event.data);
+		};
+		eegWs.onclose = function () {
+			log('Info: /ws/eeg WebSocket connection closed.');
+		};
+	}
+	function disconnectEegListener() {
+		if (eegWs != null) {
+			eegWs.close();
+			eegWs = null;
+		}
+		eegListenerConnected(false);
+	}
+	
+	function eegListenerConnected(connected) {
+		$("#disconnectEegListener").prop('disabled', !connected);
+		$("#connectEegListener").prop('disabled', connected);
+	}
+	
+	
+	function sendWsMessage(websocket, message) {
+		if (websocket != null) {
+			websocket.send(message);
+			log('Sent: ' + message);
+		} else {
+			alert('WebSocket connection not established, please connect.');
+		}
+	}
+	
+	
+	
+	function mapPlayerIdToHeadsetId() {
+		var playerId = $("#mapPlayerIdToHeadsetId .playerId").val();
+		var headsetId = $("#mapPlayerIdToHeadsetId .headsetId").val();
+		mapPlayerToHeadset(playerId, headsetId, "ATTENTION");
+	}
+	
+	function mapPlayerIdToDeviceId() {
+		var playerId = $("#mapPlayerIdToDeviceId .playerId").val();
+		var deviceId = $("#mapPlayerIdToDeviceId .deviceId").val();
+		mapPlayerToDevice(playerId, deviceId);
+		
+		var url = "/api/player/map/" + playerId + "/device/" + deviceId;
+		sendRestMessage(url, "PUT", null, function(response) {
+			log("Mapped player " + playerId + " to device " + deviceId);
+		});
+	}
+	
+	function createPlayer(playerId) {
+		var url = "/api/player/" + playerId;
+		sendRestMessage(url, "PUT", null, function(response) {
+			log("Created player " + playerId);
+		});
+	}
+	function mapPlayerToHeadset(playerId, headsetId, measurementType) {
+		var url = "/api/player/map/" + playerId + "/headset/" + headsetId + "/measurement/" + measurementType;
+		sendRestMessage(url, "PUT", null, function(response) {
+			log("Mapped player " + playerId + " to headset " + headsetId);
+		});
+	}
+	function mapPlayerToDevice(playerId, deviceId) {
+		var url = "/api/player/map/" + playerId + "/device/" + deviceId;
+		sendRestMessage(url, "PUT", null, function(response) {
+			log("Mapped player " + playerId + " to device " + deviceId);
+		});
+	}
+	function mapPlayer0ToHeadset1() {
+		mapPlayerToHeadset("0", "74E543D575B0", "ATTENTION");
+		mapPlayerToDevice("0", "0");
+	}
+	
+	function mapPlayer1ToHeadset2() {
+		mapPlayerToHeadset("1", "20689D4C0A08", "ATTENTION");
+		mapPlayerToDevice("1", "1");
+	}
+	
+	function sendRestMessage(url, requestType, data, callback) {
+		$.ajax({
+		  url: url,
+		  method: requestType,
+		  data: data
+		})
+		.done(function( response ) {
+			if(response.errors) {
+				var x;
+				for(x = 0; x < response.errors.length; x++) {
+					log("Error: " + response.errors[x]);
+				}
+			} else {
+		  		if(callback) callback(response);
+			}
+		});
+	}
+	
+	function log(message) {
+		var console = document.getElementById('console');
+		var p = document.createElement('p');
+		p.style.wordWrap = 'break-word';
+		p.appendChild(document.createTextNode(message));
+		console.appendChild(p);
+		while (console.childNodes.length > 25) {
+			console.removeChild(console.firstChild);
+		}
+		console.scrollTop = console.scrollHeight;
+	}
+</script>
+</body>
+</html>
