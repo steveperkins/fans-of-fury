@@ -33,12 +33,16 @@ public class PlayerController {
 	@RequestMapping("/api/player/setuptest")
 	public JsonResponse setupTest() {
 		logger.debug("GET to /api/player/setuptest");
-
-		mapPlayerIdToHeadsetId("0", "74E543D575B0", EventType.ATTENTION);
-		mapPlayerIdToDeviceId("0", "0");
 		
-		mapPlayerIdToHeadsetId("1", "20689D4C0A08", EventType.MEDITATION);
-		mapPlayerIdToDeviceId("1", "1");
+		String playerId = "0";
+		createPlayer(playerId);
+		mapPlayerIdToHeadsetId(playerId, "74E543D575B0", EventType.ATTENTION);
+		mapPlayerIdToDeviceId(playerId, "0");
+		
+		playerId = "1";
+		createPlayer(playerId);
+		mapPlayerIdToHeadsetId(playerId, "20689D4C0A08", EventType.MEDITATION);
+		mapPlayerIdToDeviceId(playerId, "1");
 		
 		JsonResponse response = new JsonResponse();
 		response.setStatus("success");
