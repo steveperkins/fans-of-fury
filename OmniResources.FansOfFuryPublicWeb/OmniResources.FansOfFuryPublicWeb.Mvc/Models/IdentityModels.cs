@@ -16,5 +16,10 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        /// <summary>
+        /// Gets or sets the GUID of the user (comes from the id on the QR Code used to register the user)
+        /// </summary>
+        public string UserGuid { get; set; }
     }
 }

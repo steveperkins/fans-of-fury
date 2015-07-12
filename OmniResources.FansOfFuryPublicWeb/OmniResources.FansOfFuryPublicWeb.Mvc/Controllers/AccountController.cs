@@ -5,6 +5,8 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OmniResources.FansOfFuryPublicWeb.Data.Table;
+using OmniResources.FansOfFuryPublicWeb.Data.Table.Repository;
 using OmniResources.FansOfFuryPublicWeb.Mvc.Models;
 
 namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
@@ -12,6 +14,13 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
     [Authorize]
     public class AccountController : BaseAuthenticatedController
     {
+        private readonly IUserDataRepository _userDataRepo;
+
+        public AccountController(IUserDataRepository userDataRepo)
+        {
+            _userDataRepo = userDataRepo;
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -95,9 +104,12 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
         //
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string id)
         {
-            return View();
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index", "Home");
+
+            return View(new RegisterViewModel { UserGuid = id });
         }
 
         //
@@ -109,11 +121,12 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var authUser = new ApplicationUser { UserName = model.Email, Email = model.Email, UserGuid = model.UserGuid };
+                await _userDataRepo.Save(new UserData { UserGuid = model.UserGuid, ApplicationUserId = authUser.Id });
+                var result = await UserManager.CreateAsync(authUser, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, false, false);
+                    await SignInManager.SignInAsync(authUser, false, false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
