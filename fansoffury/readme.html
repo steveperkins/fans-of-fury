@@ -21,9 +21,17 @@ h4 {
 </style>
 </head>
 <body>
-<h2>General Info</h2>
+<h2>Building / Running in Eclipse</h2>
 <div>
 	<p>The code is at http://apptfs:8080/tfs/OMNI_TFS/OmniGit/_git/ThatConference2015.</p>
+	<p>The project probably won't build initially until you set the appropriate facets.  To do so:</p>
+	<ul>
+		<li>Click Project/Properties and go to the Project Facets area</li>
+		<li>Select Dynamic Web Module and Java, then click Apply and OK</li>
+	</ul>
+	<p>(MNR 7/12) The only way I was able to get the project to start was by running com.omni.fansoffury.FansOfFuryWebApplication as a Java application.  Maven clean install still wasn't able to find the libs in WebContent\WEB-INF\lib.</p>
+</div>
+<h2>General Info</h2>
 	The Fans of Fury server provides a central point of communication for the various devices associated with the Fans of Fury game. There are five main integration points:
 	<ol>
 		<li>EEG headset to server machine (Bluetooth)</li>
