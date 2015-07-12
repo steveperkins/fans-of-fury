@@ -1,5 +1,5 @@
-﻿@model OmniResources.FansOfFuryPublicWeb.Mvc.Models.ManageLoginsViewModel
-@using Microsoft.Owin.Security
+﻿@using Microsoft.Owin.Security
+@model OmniResources.FansOfFuryPublicWeb.Mvc.Models.ManageLoginsViewModel
 @{
     ViewBag.Title = "Manage your external logins";
 }
@@ -9,7 +9,7 @@
 <p class="text-success">@ViewBag.StatusMessage</p>
 @{
     var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
-    if (loginProviders.Count() == 0) {
+    if (!loginProviders.Any()) {
         <div>
             <p>
                 There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
@@ -58,7 +58,7 @@
                 @Html.AntiForgeryToken()
                 <div id="socialLoginList">
                 <p>
-                    @foreach (AuthenticationDescription p in Model.OtherLogins)
+                    @foreach (var p in Model.OtherLogins)
                     {
                         <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
                     }

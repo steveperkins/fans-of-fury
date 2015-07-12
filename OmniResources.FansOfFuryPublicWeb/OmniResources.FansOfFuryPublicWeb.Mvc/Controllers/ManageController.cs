@@ -1,55 +1,18 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OmniResources.FansOfFuryPublicWeb.Mvc.Models;
+
+// ReSharper disable All
 
 namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
 {
     [Authorize]
-    public class ManageController : Controller
+    public class ManageController : BaseAuthenticatedController
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
-
-        public ManageController()
-        {
-        }
-
-        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
-
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set 
-            { 
-                _signInManager = value; 
-            }
-        }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
-
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
@@ -118,6 +81,7 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
             }
             // Generate the token and send it
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
+
             if (UserManager.SmsService != null)
             {
                 var message = new IdentityMessage
@@ -318,17 +282,6 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
             }
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && _userManager != null)
-            {
-                _userManager.Dispose();
-                _userManager = null;
-            }
-
-            base.Dispose(disposing);
         }
 
 #region Helpers

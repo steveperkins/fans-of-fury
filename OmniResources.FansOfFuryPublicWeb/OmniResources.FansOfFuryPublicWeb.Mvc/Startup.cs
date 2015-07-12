@@ -1,7 +1,8 @@
 ﻿using Microsoft.Owin;
+using OmniResources.FansOfFuryPublicWeb.Mvc;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(OmniResources.FansOfFuryPublicWeb.Mvc.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 namespace OmniResources.FansOfFuryPublicWeb.Mvc
 {
     public partial class Startup
