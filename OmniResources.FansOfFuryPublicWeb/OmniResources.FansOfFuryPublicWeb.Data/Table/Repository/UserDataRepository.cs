@@ -17,11 +17,11 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
         }
 
         /// <summary>
-        /// Gets a user by user GUID
+        /// Gets a user by user ID
         /// </summary>
-        public async Task<UserData> Get(string userGuid)
+        public async Task<UserData> Get(string userId)
         {
-            return await Table.SingleOrDefaultAsync(x => x.UserGuid == userGuid);
+            return await Table.SingleOrDefaultAsync(x => x.UserId == userId);
         }
     }
 }

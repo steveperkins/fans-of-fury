@@ -67,6 +67,11 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc
                 .To<UserDataRepository>()
                 .InRequestScope()
                 .WithConstructorArgument("connectionString", ConfigurationManager.AppSettings["TableStorageConnectionString"]);
+
+            kernel.Bind<ISurveyResponseRepository>()
+                .To<SurveyResponseRepository>()
+                .InRequestScope()
+                .WithConstructorArgument("connectionString", ConfigurationManager.AppSettings["TableStorageConnectionString"]);
         }        
     }
 }

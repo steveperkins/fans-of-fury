@@ -8,8 +8,8 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
     public interface IUserDataRepository : ITableRepository<UserData>
     {
         /// <summary>
-        /// Gets a user by user GUID
+        /// Gets a user by user ID
         /// </summary>
-        Task<UserData> Get(string userGuid);
+        Task<UserData> Get(string userId);
     }
 }
