@@ -11,6 +11,14 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table
     public class SurveyResponse
     {
         /// <summary>
+        /// Initializes new instances of the SurveyResponse class
+        /// </summary>
+        public SurveyResponse()
+        {
+            ResponseTimestamp = DateTime.UtcNow;
+        }
+
+        /// <summary>
         /// Gets or sets the ID of the user (from the QR code - SHOULD NOT BE DISPLAYED ANYWHERE ON THE SITE)
         /// </summary>
         [PartitionKey]
@@ -22,7 +30,7 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table
         [RowKey]
         public string RowKey
         {
-            get { return (int.MaxValue - ResponseTimestamp.Ticks).ToString(); }
+            get { return (long.MaxValue - ResponseTimestamp.Ticks).ToString(); }
             private set { /* Ignore set */ }
         }
 
