@@ -21,9 +21,17 @@ h4 {
 </style>
 </head>
 <body>
-<h2>General Info</h2>
+<h2>Building / Running in Eclipse</h2>
 <div>
 	<p>The code is at http://apptfs:8080/tfs/OMNI_TFS/OmniGit/_git/ThatConference2015.</p>
+	<p>The project probably won't build initially until you set the appropriate facets.  To do so:</p>
+	<ul>
+		<li>Click Project/Properties and go to the Project Facets area</li>
+		<li>Select Dynamic Web Module and Java, then click Apply and OK</li>
+	</ul>
+	<p>Start the server by running com.omni.fansoffury.FansOfFuryWebApplication as a Java application.</p>
+</div>
+<h2>General Info</h2>
 	The Fans of Fury server provides a central point of communication for the various devices associated with the Fans of Fury game. There are five main integration points:
 	<ol>
 		<li>EEG headset to server machine (Bluetooth)</li>
