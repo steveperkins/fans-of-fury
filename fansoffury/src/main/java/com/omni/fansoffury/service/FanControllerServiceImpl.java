@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.omni.fansoffury.balance.FanSpeedBalanceStrategy;
 import com.omni.fansoffury.device.DeviceControllerService;
 import com.omni.fansoffury.device.DeviceService;
-import com.omni.fansoffury.model.Player;
+import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.device.Device;
 import com.omni.fansoffury.model.message.DeviceControllerMessage;
 import com.omni.fansoffury.model.message.FanSpeedChangeEvent;
@@ -46,16 +46,17 @@ public class FanControllerServiceImpl implements FanControllerService {
 		deviceControllerService.broadcast(message);
 	}
 	
-	public void changeFanSpeed(Player player, Integer percentage) {
+	public void changeFanSpeed(Headset headset, Integer percentage) {
 		// Look up the fan belonging to this headset ID
-		Device device = playerService.getDevice(player);
+		Device device = headset.getDevice();
 		if(null != device) {
-			Double alteredPercentage = fanSpeedBalanceStrategy.apply(player, percentage);
+			Double alteredPercentage = fanSpeedBalanceStrategy.apply(headset.getPlayer(), percentage);
 			
 			// Convert percentage to real analog values the device can understand
 			Double analogValue = percentageToAnalog(alteredPercentage, device);
 			alteredPercentage = analogValue;
 			
+			logger.debug("Changing fan speed for Device {} to {} (originally {})", device.getId(), alteredPercentage, percentage);
 			FanSpeedChangeEvent event = new FanSpeedChangeEvent(device, alteredPercentage);
 			deviceControllerService.sendMessage(event);
 		}

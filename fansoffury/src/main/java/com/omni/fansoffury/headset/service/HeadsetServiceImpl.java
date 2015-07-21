@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.omni.fansoffury.headset.listener.FanControlMindwaveEventListener;
 import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.Player;
-import com.omni.fansoffury.player.PlayerService;
+import com.omni.fansoffury.model.device.Device;
 import com.sperkins.mindwave.event.MindwaveEventListener;
 
 @Service
@@ -23,8 +23,6 @@ public class HeadsetServiceImpl implements HeadsetService {
 	@Autowired
     private ObjectFactory<FanControlMindwaveEventListener> eventListenerFactory;
 	
-	@Autowired
-	private PlayerService playerService;
 	
 	@Autowired
 	private BluetoothSocketService bluetoothSocketService;
@@ -33,20 +31,27 @@ public class HeadsetServiceImpl implements HeadsetService {
 	private Map<String, Headset> headsets = new HashMap<String, Headset>();
 	private Map<Headset, MindwaveEventListener> headsetEventListenerMap = new HashMap<Headset, MindwaveEventListener>();
 	
+	@Override
 	public Headset getHeadset(String id) {
 		return headsets.get(id);
 	}
 	
 	@Override
-	public void mapHeadsetToPlayer(Player player, Headset headset) {
-		// TODO Persist player here, as their headset assignment has changed?
-		player.setHeadset(headset);
+	public Headset getByDeviceId(String deviceId) {
+		for(Headset headset: headsets.values()) {
+			if(null != headset.getDevice() && headset.getDevice().getId().equals(deviceId)) return headset;
+		}
+		return null;
+	}
+	
+	@Override
+	public void changeHeadsetPlayer(Headset headset, Player player) {
+		headset.setPlayer(player);
 		
 		MindwaveEventListener currentHeadsetListener = headsetEventListenerMap.get(headset);
 		if(null == currentHeadsetListener) {
 			FanControlMindwaveEventListener listener = eventListenerFactory.getObject();
-			listener.setPlayer(player);
-			
+			listener.setHeadset(headset);
 			
 			// Start listening to headset events
 			bluetoothSocketService.addListener(listener);
@@ -55,8 +60,23 @@ public class HeadsetServiceImpl implements HeadsetService {
 		headsetEventListenerMap.put(headset, currentHeadsetListener);
 	}
 	
+	@Override
+	public void changeHeadsetDevice(Headset headset, Device device) {
+		headset.setDevice(device);
+	}
+	
+	@Override
 	public void shutdown() {
 		bluetoothSocketService.shutdown();
+	}
+	
+
+	/**
+	 * Returns a copy of the current list of headsets. The copy will NOT be updated.
+	 */
+	@Override
+	public List<Headset> getHeadsets() {
+		return new ArrayList<Headset>(headsets.values());
 	}
 	
 	@PostConstruct
@@ -65,17 +85,17 @@ public class HeadsetServiceImpl implements HeadsetService {
 		Headset headset = new Headset("74E543D575B0");
 		headsets.put(headset.getId(), headset);
 		
+		// Headset 2
+		headset = new Headset("20689D88BC4A");
+		headsets.put(headset.getId(), headset);
+		
 		// Headset 3
 		headset = new Headset("20689D4C0A08");
 		headsets.put(headset.getId(), headset);
-	}
-
-	/**
-	 * Returns a copy of the current list of headsets. The copy will NOT be updated.
-	 */
-	@Override
-	public List<Headset> getHeadsets() {
-		return new ArrayList<Headset>(headsets.values());
+		
+		// Headset 4
+		headset = new Headset("11111");
+		headsets.put(headset.getId(), headset);
 	}
 	
 }

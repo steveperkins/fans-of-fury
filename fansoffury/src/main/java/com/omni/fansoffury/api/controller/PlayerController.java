@@ -5,15 +5,21 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.omni.fansoffury.device.DeviceService;
+import com.omni.fansoffury.headset.service.HeadsetId;
 import com.omni.fansoffury.headset.service.HeadsetService;
+import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.Player;
 import com.omni.fansoffury.model.device.Device;
+import com.omni.fansoffury.model.json.JsonHeadset;
 import com.omni.fansoffury.model.json.JsonResponse;
 import com.omni.fansoffury.player.PlayerService;
 import com.sperkins.mindwave.event.EventType;
@@ -35,15 +41,26 @@ public class PlayerController {
 	public JsonResponse setupTest() {
 		logger.debug("GET to /api/player/setuptest");
 		
-		String playerId = "0";
-		createPlayer(playerId);
-		mapPlayerIdToHeadsetId(playerId, "74E543D575B0", EventType.ATTENTION);
-		mapPlayerIdToDeviceId(playerId, "0");
+		JsonHeadset player = new JsonHeadset();
+		player.setPlayerId("0");
+		player.setHeadsetId(HeadsetId.HEADSET_1.getId());
+		player.setMeasurementType(EventType.ATTENTION);
+		assignPlayer(player);
 		
-		playerId = "1";
-		createPlayer(playerId);
-		mapPlayerIdToHeadsetId(playerId, "20689D4C0A08", EventType.MEDITATION);
-		mapPlayerIdToDeviceId(playerId, "1");
+		player.setPlayerId("1");
+		player.setHeadsetId(HeadsetId.HEADSET_2.getId());
+		player.setMeasurementType(EventType.MEDITATION);
+		assignPlayer(player);
+		
+		player.setPlayerId("2");
+		player.setHeadsetId(HeadsetId.HEADSET_3.getId());
+		player.setMeasurementType(EventType.ATTENTION);
+		assignPlayer(player);
+		
+		// This headset is in Appleton right now
+		player.setPlayerId("3");
+		player.setHeadsetId(HeadsetId.HEADSET_4.getId());
+		player.setMeasurementType(EventType.MEDITATION);
 		
 		JsonResponse response = new JsonResponse();
 		response.setStatus("success");
@@ -63,72 +80,47 @@ public class PlayerController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/api/player/{playerId}", method = RequestMethod.PUT)
-	public JsonResponse createPlayer(@PathVariable("playerId") String playerId) {
-		logger.debug("PUT to /api/player/{}", playerId);
+	@RequestMapping(value = "/api/player", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonResponse assignPlayer(@RequestBody JsonHeadset jsonHeadset) {
+		logger.debug("PUT to /api/player");
 		
 		JsonResponse response = new JsonResponse();
 		response.setStatus("success");
-		
-		Player existingPlayer = playerService.getPlayer(playerId);
-		if(null != existingPlayer) {
-			response.setObject(existingPlayer);
-		} else {
-			Player player = new Player();
-			player.setId(playerId);
-		
-			player = playerService.createPlayer(player);
+		try {
+			if(StringUtils.isEmpty(jsonHeadset.getHeadsetId())) throw new IllegalArgumentException("Headset ID is required");
+			if(StringUtils.isEmpty(jsonHeadset.getPlayerId())) throw new IllegalArgumentException("Player ID is required");
+			if(null == jsonHeadset.getMeasurementType()) jsonHeadset.setMeasurementType(EventType.ATTENTION);
+			
+			Headset headset = headsetService.getHeadset(jsonHeadset.getHeadsetId());
+			if(null == headset) throw new IllegalArgumentException("Headset '" + jsonHeadset.getHeadsetId() + "' doesn't exist!");
+			
+			Player player = playerService.getPlayer(jsonHeadset.getPlayerId());
+			if(null == player) {
+				player = new Player();
+				player.setId(jsonHeadset.getPlayerId());
+				player.setMeasurementType(jsonHeadset.getMeasurementType());
+				player = playerService.createPlayer(player);
+			}
+			
+			// Map the specified headset to this player
+			headsetService.changeHeadsetPlayer(headset, player);
+			
+			// If a fan ID has been provided, map the specified headset to the fan
+			if(!StringUtils.isEmpty(jsonHeadset.getFanId())) {
+				Device device = deviceService.getDevice(jsonHeadset.getFanId());
+				if(null == device) throw new IllegalArgumentException("Fan ID '" + jsonHeadset.getFanId() + "' doesn't exist!");
+				
+				headsetService.changeHeadsetDevice(headset, device);
+			}
 			
 			response.setObject(player);
-		}
-		
-		return response;
-	}
-	
-	@RequestMapping(value = "/api/player/map/{playerId}/headset/{headsetId}/measurement/{measurementType}", method = RequestMethod.PUT)
-    public JsonResponse mapPlayerIdToHeadsetId(@PathVariable("playerId") String playerId, @PathVariable("headsetId") String headsetId, @PathVariable("measurementType") EventType measurementType) {
-		logger.debug("PUT to /api/player/map/{}/headset/{}", playerId, headsetId);
-		JsonResponse response = new JsonResponse();
-		
-		try {
-			Player player = playerService.getPlayer(playerId);
-			if(null == player) throw new IllegalArgumentException("Player " + playerId + " does not exist!");
-			
-			player.setMeasurementType(measurementType);
-			headsetService.mapHeadsetToPlayer(player, headsetService.getHeadset(headsetId));
-			response.setStatus("success");
 		} catch(Exception e) {
 			response.setStatus("error");
 			String error = "Could not map player to headset: " + e.getMessage();
 			response.setErrors(Arrays.asList( new String[]{ error }));
 			logger.error(error, e);
 		}
-		
-        return response;
-    }
-	
-	@RequestMapping(value = "/api/player/map/{playerId}/device/{deviceId}", method = RequestMethod.PUT)
-	public JsonResponse mapPlayerIdToDeviceId(@PathVariable("playerId") String playerId, @PathVariable("deviceId") String deviceId) {
-		logger.debug("PUT to /api/player/map/{}/device/{}", playerId, deviceId);
-		JsonResponse response = new JsonResponse();
-		
-		try {
-			Player player = playerService.getPlayer(playerId);
-			if(null == player) throw new IllegalArgumentException("Player " + playerId + " does not exist!");
-			
-			Device device = deviceService.getDevice(deviceId);
-			if(null == device) throw new IllegalArgumentException("Device" + deviceId + " does not exist!");
-			
-			playerService.mapPlayerToDevice(player, device);
-			response.setStatus("success");
-		} catch(Exception e) {
-			response.setStatus("error");
-			String error = "Could not map player to device: " + e.getMessage();
-			response.setErrors(Arrays.asList( new String[]{ error }));
-			logger.error(error, e);
-		}
-		
-        return response;
+		return response;
 	}
 	
 }

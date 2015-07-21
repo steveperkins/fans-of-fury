@@ -3,91 +3,171 @@
 <head>
 	<title>Score</title>
 	<style type="text/css">
-		#connect-container {
-			float: left;
-			width: 400px
-		}
-		#connect-container div {
-			padding: 5px;
-		}
-		#console-container {
-			float: left;
-			margin-left: 15px;
-			width: 400px;
-		}
-		#console {
-			border: 1px solid #CCCCCC;
-			border-right-color: #999999;
-			border-bottom-color: #999999;
-			height: 170px;
-			overflow-y: scroll;
-			padding: 5px;
-			width: 100%;
-		}
-		#console p {
-			padding: 0;
-			margin: 0;
-		}
-	</style>
-	<script src="https://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
-	<script type="text/javascript">
-		var ws = null;
-		function setConnected(connected) {
-			document.getElementById('connect').disabled = connected;
-			document.getElementById('disconnect').disabled = !connected;
-		}
-		function connect() {
-			var target = document.getElementById('target').value;
-			ws = new SockJS(target);
-			ws.onopen = function () {
-				setConnected(true);
-				log('Info: WebSocket connection opened.');
-			};
-			ws.onmessage = function (event) {
-				log('Received: ' + event.data);
-			};
-			ws.onclose = function () {
-				setConnected(false);
-				log('Info: WebSocket connection closed.');
-			};
-		}
-		function disconnect() {
-			if (ws != null) {
-				ws.close();
-				ws = null;
-			}
-			setConnected(false);
+		canvas {
+			border: 2px solid #F3F3F3;
 		}
 		
-		function log(message) {
-			var console = document.getElementById('console');
-			var p = document.createElement('p');
-			p.style.wordWrap = 'break-word';
-			p.appendChild(document.createTextNode(message));
-			console.appendChild(p);
-			while (console.childNodes.length > 25) {
-				console.removeChild(console.firstChild);
-			}
-			console.scrollTop = console.scrollHeight;
+		.left-container, .right-container {
+			display: inline;
 		}
-	</script>
+		
+		.right-container .headset-id {
+		  font-size: 250%;
+		}
+		
+		.right-container div span.label {
+			font-variant: small-caps;
+		}
+		
+		.right-container .headset-id, .right-container .score {
+		}
+		
+		.right-container .score {
+		  font-size: 250%;
+		  margin-left: 10%;
+		}
+		
+		
+	</style>
+	<script type="text/javascript" src="js/smoothie.js"></script>
+	<script src="js/sockjs.min.js"></script>
+	<script src="js/jquery-2.1.4.min.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
 	Javascript and reload this page!</h2></noscript>
 <div>
-	<div id="connect-container">
+
+<div class="left-container">
+	<canvas id="H74E543D575B0" width="400" height="400"></canvas>
+	<br />
+	<canvas id="H20689D88BC4A" width="400" height="400"></canvas>
+	<br />
+	<canvas id="H20689D4C0A08" width="400" height="400"></canvas>
+	<br />
+	<canvas id="H11111" width="400" height="400"></canvas>
+</div>
+<div class="right-container">
+	<div class="H74E543D575B0">
+		<span class="headset-id">H1</span>
+		<span class="score"></span>
 		<div>
-			<input id="target" type="text" size="40" style="width: 350px" value="/score"/>
+			<span class="label">Lvl</span> <span class="level"></span>
 		</div>
 		<div>
-			<button id="connect" onclick="connect();">Connect</button>
-			<button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+			<span class="label">Type</span> <span class="measurement-type"></span>
+		</div>
+		<div>
+			<span class="label">Side</span> <span class="side"></span>
 		</div>
 	</div>
-	<div id="console-container">
-		<div id="console"></div>
+	<div class="H20689D88BC4A">
+		<span class="headset-id">H2</span>
+		<span class="score"></span>
+		<span class="label">Lvl</span> <span class="level"></span>
+		<span class="label">Type</span> <span class="measurement-type"></span>
+		<span class="label">Side</span> <span class="side"></span>
 	</div>
+	<div class="H20689D4C0A08">
+		<span class="headset-id">H3</span>
+		<span class="score"></span>
+		<span class="label">Lvl</span> <span class="level"></span>
+		<span class="label">Type</span> <span class="measurement-type"></span>
+		<span class="label">Side</span> <span class="side"></span>
+	</div>
+	<div class="H11111">
+		<span class = "headset-id">H4</span>
+		<span class = "score"></span>
+		<span class="label">Lvl</span> <span class="level"></span>
+		<span class="label">Type</span> <span class="measurement-type"></span>
+		<span class="label">Side</span> <span class="side"></span>
+	</div>
+</div>
+
+<script src="js/fof-websockets.js"></script>
+<script type="text/javascript">
+var charts = {
+	H74E543D575B0: null,
+	H20689D88BC4A: null,
+	H20689D4C0A08: null,
+	H11111: null
+}
+
+var attentionSeries = {
+	H74E543D575B0: new TimeSeries(),
+	H20689D88BC4A: new TimeSeries(),
+	H20689D4C0A08: new TimeSeries(),
+	H11111: new TimeSeries()
+}
+
+var meditationSeries = {
+	H74E543D575B0: new TimeSeries(),
+	H20689D88BC4A: new TimeSeries(),
+	H20689D4C0A08: new TimeSeries(),
+	H11111: new TimeSeries()
+}
+
+function scoreChanged(scoreChangedEvent) {
+	log("Score changed");
+}
+
+function eegChanged(eegChangedEvent) {
+	log("Eeg changed");
+	if('ATTENTION' == eegChangedEvent.eventType) attentionSeries['H' + eegChangedEvent.headset.id].append(new Date().getTime(), eegChangedEvent.value);
+	if('MEDITATION' == eegChangedEvent.eventType) meditationSeries['H' + eegChangedEvent.headset.id].append(new Date().getTime(), eegChangedEvent.value);
+	
+	var headsetContainer = ".right-container .H" + eegChangedEvent.headset.id;
+	$(headsetContainer + " .level").html(eegChangedEvent.headset.player.level);
+	$(headsetContainer + " .score").html(eegChangedEvent.headset.player.score);
+	$(headsetContainer + " .measurement-type").html(eegChangedEvent.headset.player.measurementType);
+	if(eegChangedEvent.headset.device) {
+		$(headsetContainer + " .side").html(eegChangedEvent.headset.device.fanId);
+	} else {
+		$(headsetContainer + " .side").html("");
+	}
+}
+
+var attentionLineOptions = {lineWidth:2,strokeStyle:'#f00f14',fillStyle:'rgba(249,153,155,0.30)'};
+var meditationLineOptions = {lineWidth:2,strokeStyle:'#0F2DF0',fillStyle:'rgba(153, 195, 249, 0.30)'};
+function createChart(headsetId) {
+	var chart = new SmoothieChart({millisPerPixel:18,grid:{fillStyle:'#ffffff',strokeStyle:'#e6e6e6',verticalSections:6},maxValue:100,minValue:0});
+	chart.addTimeSeries(attentionSeries[headsetId], {lineWidth:2,strokeStyle:'#f00f14',fillStyle:'rgba(249,153,155,0.30)'});
+	chart.addTimeSeries(meditationSeries[headsetId], {lineWidth:2,strokeStyle:'#0F2DF0',fillStyle:'rgba(153, 195, 249, 0.30)'});
+	charts[headsetId] = chart;
+	chart.streamTo(document.getElementById(headsetId), 200);
+	return chart;
+}
+
+function flashChart(headsetId) {
+	var canvas = $("#" + headsetId);
+	canvas.animate( { opacity: .2 } );
+	canvas.animate( { opacity: 1.0 } );
+}
+
+function resizeCanvas() {
+	var width = window.innerWidth - 400;
+	var height = window.innerHeight / 4.2;
+	var canvas = $("canvas");
+	canvas.width = width;
+	canvas.height = height;
+	canvas.attr("width", width);
+	canvas.attr("height", height);
+}
+
+function init() {
+	window.addEventListener('resize', resizeCanvas, false);
+	resizeCanvas();
+            
+	createChart("H74E543D575B0");
+	createChart("H20689D88BC4A");
+	createChart("H20689D4C0A08");
+	createChart("H11111");
+	
+	//connectScoreListener(null, scoreChanged, null);
+	connectEegListener(null, eegChanged, null);
+}
+init();
+</script>
 </div>
 </body>
 </html>

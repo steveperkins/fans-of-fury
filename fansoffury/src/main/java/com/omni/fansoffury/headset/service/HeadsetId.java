@@ -3,7 +3,9 @@ package com.omni.fansoffury.headset.service;
 public enum HeadsetId {
 	
 	HEADSET_1("74E543D575B0"),
-	HEADSET_2("20689D4C0A08");
+	HEADSET_2("20689D88BC4A"),
+	HEADSET_3("20689D4C0A08"),
+	HEADSET_4("11111");
 	
 	String id;
 	HeadsetId(String id) {

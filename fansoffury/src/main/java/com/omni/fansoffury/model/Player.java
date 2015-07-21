@@ -12,6 +12,7 @@ public class Player implements Serializable {
 	// Double so we can record/show partial levels
 	private Double level = 0.0;
 	private Headset headset;
+	private String headsetId;
 	private EventType measurementType = EventType.ATTENTION;
 	private Integer score = 0;
 	
@@ -50,6 +51,14 @@ public class Player implements Serializable {
 	}
 	public void setHeadset(Headset headset) {
 		this.headset = headset;
+	}
+
+	public String getHeadsetId() {
+		return headsetId;
+	}
+
+	public void setHeadsetId(String headsetId) {
+		this.headsetId = headsetId;
 	}
 
 	public EventType getMeasurementType() {

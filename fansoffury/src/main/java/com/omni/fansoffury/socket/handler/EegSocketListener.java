@@ -16,10 +16,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.google.gson.Gson;
 import com.omni.fansoffury.headset.service.BluetoothSocketService;
+import com.omni.fansoffury.headset.service.HeadsetService;
 import com.omni.fansoffury.model.Headset;
-import com.omni.fansoffury.model.Player;
 import com.omni.fansoffury.model.event.EegChangedEvent;
-import com.omni.fansoffury.player.PlayerService;
 import com.sperkins.mindwave.event.AttentionEvent;
 import com.sperkins.mindwave.event.Event;
 import com.sperkins.mindwave.event.EventType;
@@ -39,7 +38,7 @@ public class EegSocketListener extends TextWebSocketHandler implements MindwaveE
 	private BluetoothSocketService bluetoothSocketService;
 	
 	@Autowired
-	private PlayerService playerService;
+	private HeadsetService headsetService;
 	
 	private List<WebSocketSession> sessions = new ArrayList<WebSocketSession>(); 
 	
@@ -88,11 +87,11 @@ public class EegSocketListener extends TextWebSocketHandler implements MindwaveE
 			if(EventType.ATTENTION.equals(event.getEventType())) value = ((AttentionEvent)event).getValue();
 			else value = ((MeditationEvent)event).getValue();
 			
-			Player player = playerService.getPlayer(new Headset(event.getDeviceAddress()));
-			if(null != player) {
-				EegChangedEvent eegEvent = new EegChangedEvent(player, event.getEventType(), value);
+			Headset headset = headsetService.getHeadset(event.getDeviceAddress());
+			if(null != headset.getPlayer()) {
+				EegChangedEvent eegEvent = new EegChangedEvent(headset, event.getEventType(), value);
 				broadcast(eegEvent);
-			} else logger.error("EEG event generated without a valid player (headset ID: " + event.getDeviceAddress() + ")");
+			} else logger.debug("EEG event generated without an associated player (headset ID: " + event.getDeviceAddress() + ")");
 		}
 	}
 
