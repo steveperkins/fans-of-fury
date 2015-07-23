@@ -1,10 +1,14 @@
 package com.omni.fansoffury.player;
 
-import com.omni.fansoffury.model.Headset;
-import com.omni.fansoffury.model.Player;
-import com.omni.fansoffury.model.device.Device;
-import com.omni.fansoffury.model.device.FanDevice;
-import com.sperkins.mindwave.event.EventType;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.WeakHashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,10 +16,10 @@ import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import com.omni.fansoffury.model.Headset;
+import com.omni.fansoffury.model.Player;
+import com.omni.fansoffury.model.device.Device;
+import com.sperkins.mindwave.event.EventType;
 
 @Repository
 public class PlayerRepository {
@@ -30,7 +34,7 @@ public class PlayerRepository {
 	private static RowMapper<Player> playerMapper = new RowMapper<Player>() {
 		@Override
 		public Player mapRow(ResultSet resultSet, int i) throws SQLException {
-			return new Player(resultSet.getString("qr_code"), null);
+			return new Player(resultSet.getString("qr_code"));
 		}
 	};
 
@@ -48,7 +52,8 @@ public class PlayerRepository {
 			if (players.size() > 0) {
 				Player player = players.get(0);
 				// todo initialize the player's lastest level from database
-				player.setLevel(0.0);
+				player.setAttentionLevel(0.0);
+				player.setMeditationLevel(0.0);
 
 				// Assume that when a new player is retrieved from the DB that a new session is starting
 				player.setScore(0);

@@ -19,21 +19,18 @@ public class Player implements Serializable {
 
 	public Player() {}
 
-	public Player(String id, Double attentionLevel, Double meditationLevel, Headset headset) {
+	public Player(String id) {
+		this.id = id;
+	}
+	public Player(String id, Double attentionLevel, Double meditationLevel) {
 		super();
 		this.id = id;
 		this.attentionLevel = attentionLevel;
 		this.meditationLevel = meditationLevel;
-		this.headset = headset;
 	}
-
-	public Player(String id, Double attentionLevel, Double meditationLevel, Headset headset, EventType measurementType) {
-		this(id, attentionLevel, meditationLevel, headset);
-		this.measurementType = measurementType;
-	}
-
 	public Player(String id, Double attentionLevel, Double meditationLevel, EventType measurementType) {
-		this(id, attentionLevel, meditationLevel, null, measurementType);
+		this(id, attentionLevel, meditationLevel);
+		this.measurementType = measurementType;
 	}
 
 	public String getId() {
@@ -55,13 +52,6 @@ public class Player implements Serializable {
 
 	public void setMeditationLevel(Double meditationLevel) {
 		this.meditationLevel = meditationLevel;
-	}
-
-	public Headset getHeadset() {
-		return headset;
-	}
-	public void setHeadset(Headset headset) {
-		this.headset = headset;
 	}
 
 	public String getHeadsetId() {
