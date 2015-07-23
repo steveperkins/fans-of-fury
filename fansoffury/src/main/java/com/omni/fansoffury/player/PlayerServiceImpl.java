@@ -3,7 +3,12 @@ package com.omni.fansoffury.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.omni.fansoffury.model.Headset;
+import com.omni.fansoffury.model.device.Device;
+import com.omni.fansoffury.model.device.FanDevice;
+import com.sperkins.mindwave.event.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.omni.fansoffury.device.DeviceService;
@@ -14,30 +19,21 @@ import com.omni.fansoffury.model.Player;
 public class PlayerServiceImpl implements PlayerService {
 	
 	@Autowired
-	private HeadsetService headsetService;
-	
-	@Autowired
-	private DeviceService deviceService;
-	
-	// TODO Replace with database
-	private List<Player> players = new ArrayList<Player>();
+	private PlayerRepository playerRepository;
+
 
 	@Override
 	public Player getPlayer(String id) {
-		for(Player player: players) {
-			if(player.getId().equals(id)) return player;
-		}
-		return null;
+		return playerRepository.findOrCreateByQRCode(id);
 	}
 
 	@Override
-	public Player createPlayer(Player player) {
-		Player existingPlayer = getPlayer(player.getId());
-		if(null != existingPlayer) {
-			player = existingPlayer;
-		} else {
-			players.add(player);
-		}
-		return player;
+	public void startPlayerSession(Player player, Headset headset, EventType eventType, Device fan) {
+		playerRepository.startPlayerSession(headset,eventType,player,fan);
+	}
+
+	@Override
+	public void endPlayerSession(Headset headset) {
+		playerRepository.endPlayerSession(headset);
 	}
 }

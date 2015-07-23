@@ -31,6 +31,31 @@ h4 {
 	</ul>
 	<p>Start the server by running com.omni.fansoffury.FansOfFuryWebApplication as a Java application.</p>
 </div>
+<h2>Database configuration</h2>
+<div>
+	<p>install <a href="postgresql.com">postgres</a></p>
+	<p>
+		if you are using Mac OS X consider installing <a href="ttp://postgresapp.com">postgres.app</a> which will setup a
+		default database with the same name as your mac user.  A db user will also be created without a password that
+		has the same name as your mac user.
+	</p>
+
+	<p>
+		in application.properties configure following properties:
+		<dl>
+			<dt>spring.datasource.url</dt>
+			<dd>jdbc:postgresql://localhost:{dbport: defaults to 5432}/{dbname}</dd>
+
+			<dt>spring.datasource.username</dt>
+			<dd>postgres usernaame</dd>
+
+			<dt>spring.datasource.password</dt>
+			<dd>postgres password</dd>
+
+			<dt>spring.datasource.initialize</dt>
+			<dd>true - will drop and create the schema from the sql/createFoF.sql everytime the app is launched</dd>
+		</dl>
+</div>
 <h2>General Info</h2>
 	The Fans of Fury server provides a central point of communication for the various devices associated with the Fans of Fury game. There are five main integration points:
 	<ol>
