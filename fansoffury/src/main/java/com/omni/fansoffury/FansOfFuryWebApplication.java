@@ -1,5 +1,6 @@
 package com.omni.fansoffury;
 
+import com.omni.fansoffury.player.DataLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
@@ -51,7 +52,12 @@ public class FansOfFuryWebApplication extends WebMvcAutoConfiguration implements
 	public EegSocketListener eegSocketListener() {
 		return new EegSocketListener();
 	}
-	
+
+	@Bean
+	public DataLogger dataLogger() {
+		return new DataLogger();
+	}
+
 //	@Bean 
 //	public ServletListenerRegistrationBean servletListener() {
 //	    return new ServletListenerRegistrationBean(new ApplicationStartupListener());

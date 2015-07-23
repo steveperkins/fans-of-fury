@@ -95,23 +95,23 @@ public class PlayerController {
 			if(null == headset) throw new IllegalArgumentException("Headset '" + jsonHeadset.getHeadsetId() + "' doesn't exist!");
 			
 			Player player = playerService.getPlayer(jsonHeadset.getPlayerId());
-			if(null == player) {
-				player = new Player();
-				player.setId(jsonHeadset.getPlayerId());
-				player.setMeasurementType(jsonHeadset.getMeasurementType());
-				player = playerService.createPlayer(player);
-			}
-			
+
 			// Map the specified headset to this player
 			headsetService.changeHeadsetPlayer(headset, player);
-			
+
+			Device device = null;
 			// If a fan ID has been provided, map the specified headset to the fan
 			if(!StringUtils.isEmpty(jsonHeadset.getFanId())) {
-				Device device = deviceService.getDevice(jsonHeadset.getFanId());
+				device = deviceService.getDevice(jsonHeadset.getFanId());
 				if(null == device) throw new IllegalArgumentException("Fan ID '" + jsonHeadset.getFanId() + "' doesn't exist!");
-				
 				headsetService.changeHeadsetDevice(headset, device);
 			}
+
+			// make sure to end any active sessions for the headset
+			playerService.endPlayerSession(headset);
+
+			// start a new session for the player
+			playerService.startPlayerSession(player,headset, jsonHeadset.getMeasurementType(), device);
 			
 			response.setObject(player);
 		} catch(Exception e) {
