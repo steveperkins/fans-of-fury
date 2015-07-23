@@ -1,111 +1,354 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Score</title>
+  <link rel="stylesheet" href="css/pure.min.css"/>
+  <!--
+  <link rel="stylesheet" href="css/pure-grids-responsive.min.css"/>
+-->
 	<style type="text/css">
-		canvas {
-			border: 2px solid #F3F3F3;
-		}
-		
-		.left-container, .right-container {
-			display: inline;
-		}
-		
-		.right-container .headset-id {
-		  font-size: 250%;
-		}
-		
-		.right-container div span.label {
-			font-variant: small-caps;
-		}
-		
-		.right-container .headset-id, .right-container .score {
-		}
-		
-		.right-container .score {
-		  font-size: 250%;
-		  margin-left: 10%;
-		}
-		
-		
+    body {
+      /* background: url('img/binding_dark.png'); */
+      background-image: url('img/batthern.png');
+      color: black;
+    }
+
+    .border.top {
+      background-color: black;
+      height: 0px;
+    }
+
+    .border.bottom {
+      background-color: black;
+      height: 0px;
+    }
+
+    .playing-container .middle {
+      text-align: center;
+      padding-top: 2%;*/
+      /*margin-top:2px;*/
+      background-color: white;
+      background-image: url('img/gplay.png');
+      color: black;
+
+      -webkit-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
+      -moz-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
+      box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
+    }
+
+    .playing-container {
+      height: 65%;
+    }
+
+    .separator-container {
+      text-align: center;
+      margin-top:40px;
+    }
+
+    .ondeck-container {
+      height: 30%;
+      text-align: center;
+    }
+
+    .label {
+      margin-top: 20%;
+    }
+
+    .headset, .level, .score {
+      font-size: 730%;
+      color: black;
+      -webkit-text-fill-color: #FFB700;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: #E0A100;
+    }
+
+    .label.headset, .label.level, .label.score {
+      font-size: 350%;
+      color: black;
+      -webkit-text-fill-color: black;
+      -webkit-text-stroke-color: #525252;
+    }
+
+    .playing-container .play-time {
+      font-size: 200%;
+    }
+
+    .playing-container .left .play-time {
+      text-align: right;
+      margin-right: 20px;
+    }
+
+    .playing-container .right .play-time {
+      text-align: left;
+      margin-left: 20px;
+    }
+
+    .playing-container .side0 {
+      text-align: right;
+    }
+    .playing-container .side1 {
+      text-align: left;
+    }
+
+    .separator-container {
+      margin-top: 187px;
+      border-top: 1px solid rgb(107, 107, 107);
+      /* border-bottom: 1px solid rgb(107, 107, 107);*/
+      background-image: url('img/on_deck_bkg.png');
+    }
+
+    /* On Deck text element */
+    .separator-container .text {
+      display: inline-block;
+      font-size: 230%;
+      font-weight: bold;
+      color: black;
+      -webkit-text-fill-color: black;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: ##FF9D2E;
+    }
+
+    .ondeck-container .middle img {
+      margin-top: 40px;
+    }
+
+    .ondeck-container {
+      background: url('img/binding_dark.png');
+      /*background-image: url('img/batthern.png');*/
+    }
+
+    .ondeck-container h1 {
+      color: white;
+    }
+
+    #side0-graph, #side1-graph, #ondeck1-graph, #ondeck2-graph {
+      width:600px;
+      height:400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #ondeck1-graph, #ondeck2-graph {
+        height: 295px;
+        width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 2px solid gray;
+    }
+
+
 	</style>
-	<script type="text/javascript" src="js/smoothie.js"></script>
-	<script src="js/sockjs.min.js"></script>
-	<script src="js/jquery-2.1.4.min.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
 	Javascript and reload this page!</h2></noscript>
-<div>
-
-<div class="left-container">
-	<canvas id="H74E543D575B0" width="400" height="400"></canvas>
-	<br />
-	<canvas id="H20689D88BC4A" width="400" height="400"></canvas>
-	<br />
-	<canvas id="H20689D4C0A08" width="400" height="400"></canvas>
-	<br />
-	<canvas id="H11111" width="400" height="400"></canvas>
+<div class="border top"></div>
+<div class="playing-container pure-g">
+  <!-- Left 1/3 panel -->
+  <div class="left pure-u-8-24">
+    <div class="graph pure-g">
+      <div class="pure-u-1">
+        <div id="side0-graph"></div>
+        <div class="side0 play-time">04:59</div>
+      </div>
+    </div>
+  </div>
+  <div class="middle pure-u-8-24">
+    <div class="side0 pure-u-1-5">
+      <div class="headset">
+        1
+      </div>
+      <div class="level">
+        10
+      </div>
+      <div class="score">
+        5
+      </div>
+    </div>
+    <!-- What the fuck, Pure? 2+2 = 5? -->
+    <div class="pure-u-2-5">
+      <div class="label headset">
+        player
+      </div>
+      <div class="label level">
+        level
+      </div>
+      <div class="label score">
+        score
+      </div>
+    </div>
+    <div class="side1 pure-u-1-5">
+      <div class="headset">
+        2
+      </div>
+      <div class="level">
+        13
+      </div>
+      <div class="score">
+        21
+      </div>
+    </div>
+  </div>
+  <div class="right pure-u-8-24">
+    <div class="pure-g">
+      <div class="pure-u-1">
+        <div id="side1-graph"></div>
+        <div class="side1 play-time">04:59</div>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="right-container">
-	<div class="H74E543D575B0">
-		<span class="headset-id">H1</span>
-		<span class="score"></span>
-		<div>
-			<span class="label">Lvl</span> <span class="level"></span>
-		</div>
-		<div>
-			<span class="label">Type</span> <span class="measurement-type"></span>
-		</div>
-		<div>
-			<span class="label">Side</span> <span class="side"></span>
-		</div>
-	</div>
-	<div class="H20689D88BC4A">
-		<span class="headset-id">H2</span>
-		<span class="score"></span>
-		<span class="label">Lvl</span> <span class="level"></span>
-		<span class="label">Type</span> <span class="measurement-type"></span>
-		<span class="label">Side</span> <span class="side"></span>
-	</div>
-	<div class="H20689D4C0A08">
-		<span class="headset-id">H3</span>
-		<span class="score"></span>
-		<span class="label">Lvl</span> <span class="level"></span>
-		<span class="label">Type</span> <span class="measurement-type"></span>
-		<span class="label">Side</span> <span class="side"></span>
-	</div>
-	<div class="H11111">
-		<span class = "headset-id">H4</span>
-		<span class = "score"></span>
-		<span class="label">Lvl</span> <span class="level"></span>
-		<span class="label">Type</span> <span class="measurement-type"></span>
-		<span class="label">Side</span> <span class="side"></span>
-	</div>
+<div class="separator-container pure-g">
+  <div class="pure-u-1">
+    <div class="text">On Deck</div>
+  </div>
 </div>
+<div class="ondeck-container pure-g">
+  <div class="left pure-u-8-24">
+    <div class="graph pure-g">
+      <h1 class="pure-u-1">
+        Headset 3
+      </h1>
+      <div class="pure-u-1">
+        <canvas id="ondeck1-graph"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="middle pure-u-8-24">
+    <img src="img/fans_of_fury_logo.png" />
+  </div>
+  <div class="right pure-u-8-24">
+    <div class="pure-g">
+      <h1 class="pure-u-1">
+        Headset 4
+      </h1>
+      <div class="pure-u-1">
+        <canvas id="ondeck2-graph"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="border bottom"></div>
 
+<script src="js/raphael.2.1.0.min.js"></script>
+<script src="js/justgage.1.0.1.min.js"></script>
+<script type="text/javascript" src="js/smoothie.js"></script>
+<script src="js/sockjs.min.js"></script>
+<script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/fof-websockets.js"></script>
 <script type="text/javascript">
-var charts = {
-	H74E543D575B0: null,
-	H20689D88BC4A: null,
-	H20689D4C0A08: null,
-	H11111: null
-}
+// To update: side0Graph.refresh(newValue)
+var playingContainerTextColor = "#3B3B3B";
+var side0Graph = new JustGage({
+  id: "side0-graph",
+  value: 67,
+  min: 0,
+  max: 100,
+  title: "Blue Team",
+  titleFontColor: "#78B9FF",
+  valueFontColor: playingContainerTextColor,
+  gaugeColor: playingContainerTextColor,
+  labelFontColor: playingContainerTextColor
+});
+side0Graph.deviceId = "0";
 
-var attentionSeries = {
-	H74E543D575B0: new TimeSeries(),
-	H20689D88BC4A: new TimeSeries(),
-	H20689D4C0A08: new TimeSeries(),
-	H11111: new TimeSeries()
-}
+var side1Graph = new JustGage({
+  id: "side1-graph",
+  value: 21,
+  min: 0,
+  max: 100,
+  title: "Red Team",
+  titleFontColor: "#FF4D4D",
+  valueFontColor: playingContainerTextColor,
+  gaugeColor: playingContainerTextColor,
+  labelFontColor: playingContainerTextColor
+});
+side1Graph.deviceId = "1";
 
-var meditationSeries = {
-	H74E543D575B0: new TimeSeries(),
-	H20689D88BC4A: new TimeSeries(),
-	H20689D4C0A08: new TimeSeries(),
-	H11111: new TimeSeries()
-}
+var ondeck1GraphSerieses = {
+  ATTENTION: new TimeSeries(),
+  MEDITATION: new TimeSeries()
+};
+var ondeck1Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1},maxValue:100,minValue:0});
+ondeck1Graph.streamTo(document.getElementById("ondeck1-graph"), 500);
+ondeck1Graph.addTimeSeries(ondeck1GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
+ondeck1Graph.addTimeSeries(ondeck1GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
+ondeck1Graph.headsetId = null;
+
+// var ondeckContainerTextColor = "white";
+// new JustGage({
+//   id: "ondeck1-graph",
+//   value: 0,
+//   min: 0,
+//   max: 100,
+//   title: "Headset 3",
+//   titleFontColor: ondeckContainerTextColor,
+//   valueFontColor: ondeckContainerTextColor,
+//   gaugeColor: ondeckContainerTextColor,
+//   /*gaugeColor: "#000000",*/
+//   labelFontColor: ondeckContainerTextColor
+// });
+// ondeck1Graph.deviceId = null;
+
+var ondeck1GraphSerieses = {
+  ATTENTION: new TimeSeries(),
+  MEDITATION: new TimeSeries()
+};
+var ondeck2Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1},maxValue:100,minValue:0});
+ondeck2Graph.streamTo(document.getElementById("ondeck2-graph"), 500);
+ondeck2Graph.addTimeSeries(ondeck1GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
+ondeck2Graph.addTimeSeries(ondeck1GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
+ondeck2Graph.headsetId = null;
+
+// var ondeck2Graph = new JustGage({
+//   id: "ondeck2-graph",
+//   value: 94,
+//   min: 0,
+//   max: 100,
+//   title: "Headset 4",
+//   titleFontColor: ondeckContainerTextColor,
+//   valueFontColor: ondeckContainerTextColor,
+//   gaugeColor: ondeckContainerTextColor,
+//   labelFontColor: ondeckContainerTextColor
+// });
+// ondeck2Graph.deviceId = null;
+
+/* Maps headset IDs to player/fan data and graphs */
+var HEADSETS = {
+  H74E543D575B0: {
+    number: "1",
+    headsetId: '74E543D575B0',
+    playerId: '-1',
+    measurementType: 'ATTENTION',
+    deviceId: null,
+    graph: null
+  },
+  H20689D88BC4A: {
+    number: "2",
+    headsetId: '20689D4C0A08',
+    playerId: '-2',
+    measurementType: 'MEDITATION',
+    deviceId: null,
+    graph: null
+  },
+  H20689D4C0A08: {
+    number: "3",
+    headsetId: '20689D4C0A08',
+    playerId: '-3',
+    measurementType: 'ATTENTION',
+    deviceId: null,
+    graph: null
+  },
+  H11111: {
+    number: "4",
+    headsetId: '11111',
+    playerId: '-4',
+    measurementType: 'MEDITATION',
+    deviceId: null,
+    graph: null
+  }
+};
 
 function scoreChanged(scoreChangedEvent) {
 	log("Score changed");
@@ -113,61 +356,167 @@ function scoreChanged(scoreChangedEvent) {
 
 function eegChanged(eegChangedEvent) {
 	log("Eeg changed");
-	if('ATTENTION' == eegChangedEvent.eventType) attentionSeries['H' + eegChangedEvent.headset.id].append(new Date().getTime(), eegChangedEvent.value);
-	if('MEDITATION' == eegChangedEvent.eventType) meditationSeries['H' + eegChangedEvent.headset.id].append(new Date().getTime(), eegChangedEvent.value);
-	
-	var headsetContainer = ".right-container .H" + eegChangedEvent.headset.id;
-	$(headsetContainer + " .level").html(eegChangedEvent.headset.player.level);
-	$(headsetContainer + " .score").html(eegChangedEvent.headset.player.score);
-	$(headsetContainer + " .measurement-type").html(eegChangedEvent.headset.player.measurementType);
-	if(eegChangedEvent.headset.device) {
-		$(headsetContainer + " .side").html(eegChangedEvent.headset.device.fanId);
-	} else {
-		$(headsetContainer + " .side").html("");
-	}
+
+  var headset = HEADSETS['H' + eegChangedEvent.headset.id];
+
+  var playerHasLeft = false;
+  var playerIsNowAssignedToDevice = false;
+  var playerIsAssignedToDifferentDevice = false;
+  if( headset.deviceId && !eegChangedEvent.headset.device ) playerHasLeft = true;
+  else if( !headset.deviceId && eegChangedEvent.headset.device && eegChangedEvent.headset.device.id ) playerIsNowAssignedToDevice = true;
+  else if(eegChangedEvent.headset.device && headset.deviceId != eegChangedEvent.headset.device.id ) playerIsAssignedToDifferentDevice = true;
+
+  if(playerHasLeft) {
+    // Stop displaying data for this player
+    if(isPlayingGraph(headset.graph)) headset.graph.refresh(0);
+    headset.level = 0;
+    headset.score = 0;
+    headset.measurementType = null;
+
+    displayPlayerData(headset);
+    stopClock(headset.deviceId);
+
+    headset.deviceId = null;
+    headset.graph = null;
+
+    if(!ondeck1Graph.headsetId) {
+      ondeck1Graph.headsetId = headset.headsetId;
+      headset.graph = ondeck1Graph;
+    } else if(!ondeck2Graph.headsetId) {
+      ondeck2Graph.headsetId = headset.headsetId;
+      headset.graph = ondeck2Graph;
+    }
+  } else if(playerIsNowAssignedToDevice) {
+    // Change the player's graph to their device's side and display their data in a new location
+    if(ondeck1Graph.headsetId == eegChangedEvent.headset.id) {
+      // Stop displaying data on this graph
+      ondeck1Graph.headsetId = null;
+    } else if(ondeck2Graph.headsetId == eegChangedEvent.headset.id) {
+      // Stop displaying data on this graph
+      ondeck2Graph.headsetId = null;
+    }
+
+    if(eegChangedEvent.headset.device.id == side0Graph.deviceId) {
+      removeGraphFromAllHeadsets(side0Graph);
+      headset.graph = side0Graph;
+    } else if(eegChangedEvent.headset.device.id == side1Graph.deviceId){
+      removeGraphFromAllHeadsets(side1Graph);
+      headset.graph = side1Graph;
+    }
+    startClock(eegChangedEvent.headset.device.id);
+  } else if(playerIsAssignedToDifferentDevice) {
+    // Change the player's graph to their current device's side and remove their data from their previous side
+
+  }
+
+  if(eegChangedEvent.headset.device && eegChangedEvent.headset.device.id) {
+    headset.deviceId = eegChangedEvent.headset.device.id;
+  } else {
+    headset.deviceId = null;
+  }
+  headset.level = eegChangedEvent.headset.player.level;
+  headset.score = eegChangedEvent.headset.player.score;
+  headset.measurementType = eegChangedEvent.headset.player.measurementType;
+  if(!playerHasLeft && isPlayingGraph(headset.graph) && headset.measurementType == eegChangedEvent.eventType) {
+    // Update graph
+    headset.graph.refresh(eegChangedEvent.value);
+    console.log("Displaying " + eegChangedEvent.eventType + " value " + eegChangedEvent.value + " for headset " + headset.number);
+    displayPlayerData(headset);
+  }
+
+  if(ondeck1Graph.headsetId == headset.headsetId) {
+    ondeck1GraphSerieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
+  } else if(ondeck2Graph.headsetId == headset.headsetId) {
+    ondeck2GraphSerieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
+  }
 }
 
-var attentionLineOptions = {lineWidth:2,strokeStyle:'#f00f14',fillStyle:'rgba(249,153,155,0.30)'};
-var meditationLineOptions = {lineWidth:2,strokeStyle:'#0F2DF0',fillStyle:'rgba(153, 195, 249, 0.30)'};
-function createChart(headsetId) {
-	var chart = new SmoothieChart({millisPerPixel:18,grid:{fillStyle:'#ffffff',strokeStyle:'#e6e6e6',verticalSections:6},maxValue:100,minValue:0});
-	chart.addTimeSeries(attentionSeries[headsetId], {lineWidth:2,strokeStyle:'#f00f14',fillStyle:'rgba(249,153,155,0.30)'});
-	chart.addTimeSeries(meditationSeries[headsetId], {lineWidth:2,strokeStyle:'#0F2DF0',fillStyle:'rgba(153, 195, 249, 0.30)'});
-	charts[headsetId] = chart;
-	chart.streamTo(document.getElementById(headsetId), 200);
-	return chart;
+function displayPlayerData(headset) {
+  if(headset.deviceId) {
+    var container = ".playing-container .middle .side" + headset.deviceId;
+    $(container + " .score").text(headset.score);
+    $(container + " .level").text(headset.level);
+    $(container + " .headset").text(headset.number);
+    // $(container + " .middle .side" + headset.deviceId + " .measurement-type").text("");
+  }
 }
 
-function flashChart(headsetId) {
-	var canvas = $("#" + headsetId);
-	canvas.animate( { opacity: .2 } );
-	canvas.animate( { opacity: 1.0 } );
+function isPlayingGraph(graph) {
+  return side0Graph == graph || side1Graph == graph;
 }
 
-function resizeCanvas() {
-	var width = window.innerWidth - 400;
-	var height = window.innerHeight / 4.2;
-	var canvas = $("canvas");
-	canvas.width = width;
-	canvas.height = height;
-	canvas.attr("width", width);
-	canvas.attr("height", height);
+var sideClockValue = {
+  "0": 0,
+  "1": 0
+};
+var sideClockInterval = {
+  "0": null,
+  "1": null
+}
+function startClock(sideNumber) {
+  stopClock(sideNumber);
+  updateClock(sideNumber);
+  sideClockInterval[sideNumber] = setInterval(function() { updateClock(sideNumber); }, 1000);
+}
+function stopClock(sideNumber) {
+  var interval = sideClockInterval[sideNumber];
+  if(interval) {
+    clearInterval(interval);
+  }
+}
+function restartClock(sideNumber) {
+  stopClock(sideNumber);
+  sideClockValue[sideNumber] = 0;
+  startClock(sideNumber);
+}
+function updateClock(sideNumber) {
+  sideClockValue[sideNumber] += 1000;
+  var min = (sideClockValue[sideNumber]/1000/60) << 0;
+  var sec = (sideClockValue[sideNumber]/1000) % 60;
+  var playTimeElement = $(".playing-container .side" + sideNumber + ".play-time");
+  playTimeElement.text(min + ':' + padZero("" + sec));
+  if(min >= 5) playTimeElement.attr("style", "color: red");
+  else playTimeElement.removeAttr("style");
+
+}
+
+function removeGraphFromAllHeadsets(graph) {
+  for (var property in HEADSETS) {
+    if (HEADSETS.hasOwnProperty(property)) {
+        if(HEADSETS[property].graph == graph) {
+          HEADSETS[property].graph = null;
+        }
+    }
+  }
+}
+
+function padZero(str) {
+  var pad = "00"
+  return pad.substring(0, pad.length - str.length) + str;
+}
+
+function arrayContains(arr, obj) {
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function resize() {
+  document.getElementsByTagName('body')[0].setAttribute("style", "height: " + document.body.scrollHeight - 50 + "px");
 }
 
 function init() {
-	window.addEventListener('resize', resizeCanvas, false);
-	resizeCanvas();
-            
-	createChart("H74E543D575B0");
-	createChart("H20689D88BC4A");
-	createChart("H20689D4C0A08");
-	createChart("H11111");
-	
+	window.addEventListener('resize', resize, false);
+	resize();
+
 	//connectScoreListener(null, scoreChanged, null);
 	connectEegListener(null, eegChanged, null);
 }
 init();
+
 </script>
-</div>
 </body>
 </html>

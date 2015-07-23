@@ -47,6 +47,7 @@ public class HeadsetServiceImpl implements HeadsetService {
 	@Override
 	public void changeHeadsetPlayer(Headset headset, Player player) {
 		headset.setPlayer(player);
+		headset.setDevice(null);
 		
 		MindwaveEventListener currentHeadsetListener = headsetEventListenerMap.get(headset);
 		if(null == currentHeadsetListener) {
@@ -62,6 +63,14 @@ public class HeadsetServiceImpl implements HeadsetService {
 	
 	@Override
 	public void changeHeadsetDevice(Headset headset, Device device) {
+		// Remove this device from any other players assigned to it
+		if(null != device) {
+			for(Headset h: headsets.values()) {
+				if(null != h.getDevice() && h.getDevice().getId().equals(device.getId())) {
+					h.setDevice(null);
+				}
+			}
+		}
 		headset.setDevice(device);
 	}
 	

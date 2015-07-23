@@ -26,7 +26,7 @@ public class OffsetFanSpeedBalanceStrategyImpl implements FanSpeedBalanceStrateg
 	 * @return
 	 */
 	protected Double calculateOffset(Player player) {
-		Double offset = BASE_OFFSET - (player.getLevel() * 5);
+		Double offset = BASE_OFFSET - (player.getAttentionLevel() * 5);
 		return offset;
 	}
 

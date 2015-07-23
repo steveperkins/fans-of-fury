@@ -10,7 +10,8 @@ public class Player implements Serializable {
 	// QR code ID
 	private String id;
 	// Double so we can record/show partial levels
-	private Double level = 0.0;
+	private Double attentionLevel = 0.0;
+	private Double meditationLevel = 0.0;
 	private Headset headset;
 	private String headsetId;
 	private EventType measurementType = EventType.ATTENTION;
@@ -18,20 +19,21 @@ public class Player implements Serializable {
 	
 	public Player() {}
 	
-	public Player(String id, Double level, Headset headset) {
+	public Player(String id, Double attentionLevel, Double meditationLevel, Headset headset) {
 		super();
 		this.id = id;
-		this.level = level;
+		this.attentionLevel = attentionLevel;
+		this.meditationLevel = meditationLevel;
 		this.headset = headset;
 	}
 	
-	public Player(String id, Double level, Headset headset, EventType measurementType) {
-		this(id, level, headset);
+	public Player(String id, Double attentionLevel, Double meditationLevel, Headset headset, EventType measurementType) {
+		this(id, attentionLevel, meditationLevel, headset);
 		this.measurementType = measurementType;
 	}
 	
-	public Player(String id, Double level, EventType measurementType) {
-		this(id, level, null, measurementType);
+	public Player(String id, Double attentionLevel, Double meditationLevel, EventType measurementType) {
+		this(id, attentionLevel, meditationLevel, null, measurementType);
 	}
 
 	public String getId() {
@@ -40,12 +42,20 @@ public class Player implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public Double getLevel() {
-		return level;
+	public Double getAttentionLevel() {
+		return attentionLevel;
 	}
-	public void setLevel(Double level) {
-		this.level = level;
+	public void setAttentionLevel(Double level) {
+		this.attentionLevel = level;
 	}
+	public Double getMeditationLevel() {
+		return meditationLevel;
+	}
+
+	public void setMeditationLevel(Double meditationLevel) {
+		this.meditationLevel = meditationLevel;
+	}
+
 	public Headset getHeadset() {
 		return headset;
 	}

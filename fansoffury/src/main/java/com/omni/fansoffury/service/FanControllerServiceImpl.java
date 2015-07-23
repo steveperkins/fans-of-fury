@@ -50,7 +50,8 @@ public class FanControllerServiceImpl implements FanControllerService {
 		// Look up the fan belonging to this headset ID
 		Device device = headset.getDevice();
 		if(null != device) {
-			Double alteredPercentage = fanSpeedBalanceStrategy.apply(headset.getPlayer(), percentage);
+//			Double alteredPercentage = fanSpeedBalanceStrategy.apply(headset.getPlayer(), percentage);
+			Double alteredPercentage = new Double(percentage);
 			
 			// Convert percentage to real analog values the device can understand
 			Double analogValue = percentageToAnalog(alteredPercentage, device);
@@ -64,8 +65,8 @@ public class FanControllerServiceImpl implements FanControllerService {
 	}
 	
 	protected Double percentageToAnalog(Double percentage, Device fanDevice) {
-		if(percentage >= 100) return fanDevice.getMaxInputValue();
-		if(percentage <= 0) return fanDevice.getMinInputValue();
+		if(percentage >= fanDevice.getMaxInputValue()) return fanDevice.getMaxInputValue();
+		if(percentage <= fanDevice.getMinInputValue()) return fanDevice.getMinInputValue();
 		
 		Double delta = fanDevice.getMaxInputValue() - fanDevice.getMinInputValue() + 1;
 		Double analogValue = (percentage / 100) * delta;

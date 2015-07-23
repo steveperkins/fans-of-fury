@@ -111,6 +111,9 @@ public class PlayerController {
 				if(null == device) throw new IllegalArgumentException("Fan ID '" + jsonHeadset.getFanId() + "' doesn't exist!");
 				
 				headsetService.changeHeadsetDevice(headset, device);
+			} else if(null != headset.getDevice()){
+				// Otherwise the player is being disassociated from its current device
+				headsetService.changeHeadsetDevice(headset, null);
 			}
 			
 			response.setObject(player);

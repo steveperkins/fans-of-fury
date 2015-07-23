@@ -1,5 +1,7 @@
 package com.omni.fansoffury.model.event;
 
+import java.util.Date;
+
 import com.omni.fansoffury.model.Headset;
 
 /**
@@ -10,6 +12,7 @@ import com.omni.fansoffury.model.Headset;
 public class ScoreChangedEvent {
 	private Integer newScore;
 	private Headset headset;
+	private Long timestamp = new Date().getTime();
 	
 	public ScoreChangedEvent(Headset headset, Integer newScore) {
 		super();
@@ -30,5 +33,13 @@ public class ScoreChangedEvent {
 	}
 	public void setNewScore(Integer newScore) {
 		this.newScore = newScore;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 }
