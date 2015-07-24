@@ -16,21 +16,22 @@
     <div class="graph pure-g">
       <div class="pure-u-1">
         <div id="side0-graph"></div>
-        <div class="side0 play-time">04:59</div>
+        <div class="side0 play-time">00:00</div>
       </div>
     </div>
   </div>
   <div class="middle pure-u-8-24">
     <div class="side0 pure-u-1-5">
       <div class="headset">
-        1
+        0
       </div>
       <div class="level">
-        10
+        0
       </div>
       <div class="score">
-        5
+        0
       </div>
+      <div class="measurement-type"></div>
     </div>
     <!-- What the fuck, Pure? 2+2 = 5? -->
     <div class="pure-u-2-5">
@@ -43,24 +44,28 @@
       <div class="label score">
         score
       </div>
+      <div class="label measurement-type">
+      	type
+      </div>
     </div>
     <div class="side1 pure-u-1-5">
       <div class="headset">
-        2
+        0
       </div>
       <div class="level">
-        13
+        0
       </div>
       <div class="score">
-        21
+        0
       </div>
+      <div class="measurement-type"></div>
     </div>
   </div>
   <div class="right pure-u-8-24">
     <div class="pure-g">
       <div class="pure-u-1">
         <div id="side1-graph"></div>
-        <div class="side1 play-time">04:59</div>
+        <div class="side1 play-time">00:00</div>
       </div>
     </div>
   </div>
@@ -108,7 +113,7 @@
 var playingContainerTextColor = "#3B3B3B";
 var side0Graph = new JustGage({
   id: "side0-graph",
-  value: 67,
+  value: 0,
   min: 0,
   max: 100,
   title: "Blue Team",
@@ -121,7 +126,7 @@ side0Graph.deviceId = "0";
 
 var side1Graph = new JustGage({
   id: "side1-graph",
-  value: 21,
+  value: 0,
   min: 0,
   max: 100,
   title: "Red Team",
@@ -136,21 +141,23 @@ var ondeck1GraphSerieses = {
   ATTENTION: new TimeSeries(),
   MEDITATION: new TimeSeries()
 };
-var ondeck1Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1,fontSize:16},maxValue:100,minValue:0});
+var ondeck1Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:10},labels:{fillStyle:'#4f0000',precision:0,fontSize:18},maxValue:100,minValue:0});
 ondeck1Graph.streamTo(document.getElementById("ondeck1-graph"), 500);
 ondeck1Graph.addTimeSeries(ondeck1GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
 ondeck1Graph.addTimeSeries(ondeck1GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
-ondeck1Graph.headsetId = null;
+ondeck1Graph.serieses = ondeck1GraphSerieses;
+ondeck1Graph.titleSelector = ".ondeck-container .left h1";
 
 var ondeck2GraphSerieses = {
   ATTENTION: new TimeSeries(),
   MEDITATION: new TimeSeries()
 };
-var ondeck2Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1,fontSize:16},maxValue:100,minValue:0});
+var ondeck2Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:10},labels:{fillStyle:'#4f0000',precision:0,fontSize:18},maxValue:100,minValue:0});
 ondeck2Graph.streamTo(document.getElementById("ondeck2-graph"), 500);
-ondeck2Graph.addTimeSeries(ondeck1GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
-ondeck2Graph.addTimeSeries(ondeck1GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
-ondeck2Graph.headsetId = null;
+ondeck2Graph.addTimeSeries(ondeck2GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
+ondeck2Graph.addTimeSeries(ondeck2GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
+ondeck2Graph.serieses = ondeck2GraphSerieses;
+ondeck2Graph.titleSelector = ".ondeck-container .right h1";
 
 /* Maps headset IDs to player/fan data and graphs */
 var HEADSETS = {
@@ -193,8 +200,6 @@ function scoreChanged(scoreChangedEvent) {
 }
 
 function eegChanged(eegChangedEvent) {
-	log("Eeg changed");
-
   var headset = HEADSETS['H' + eegChangedEvent.headset.id];
 
   var playerHasLeft = false;
@@ -215,24 +220,24 @@ function eegChanged(eegChangedEvent) {
     stopClock(headset.deviceId);
 
     headset.deviceId = null;
-    headset.graph = null;
 
-    if(!ondeck1Graph.headsetId) {
-      ondeck1Graph.headsetId = headset.headsetId;
-      headset.graph = ondeck1Graph;
-    } else if(!ondeck2Graph.headsetId) {
-      ondeck2Graph.headsetId = headset.headsetId;
-      headset.graph = ondeck2Graph;
+    // Reassign this headset to an on-deck graph
+    headset.graph = getFirstOpenOnDeckGraph();
+    if(null == headset.graph) {
+      setTimeout(function() {
+        headset.graph = getFirstOpenOnDeckGraph();
+        headset.graph.serieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
+        $(headset.graph.titleSelector).text("Headset " + headset.number);
+      }, 1000);
+    } else {
+    	headset.graph.serieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
+        $(headset.graph.titleSelector).text("Headset " + headset.number);
     }
+
+
   } else if(playerIsNowAssignedToDevice) {
     // Change the player's graph to their device's side and display their data in a new location
-    if(ondeck1Graph.headsetId == eegChangedEvent.headset.id) {
-      // Stop displaying data on this graph
-      ondeck1Graph.headsetId = null;
-    } else if(ondeck2Graph.headsetId == eegChangedEvent.headset.id) {
-      // Stop displaying data on this graph
-      ondeck2Graph.headsetId = null;
-    }
+    headset.graph = null;
 
     if(eegChangedEvent.headset.device.id == side0Graph.deviceId) {
       removeGraphFromAllHeadsets(side0Graph);
@@ -262,10 +267,8 @@ function eegChanged(eegChangedEvent) {
     displayPlayerData(headset);
   }
 
-  if(ondeck1Graph.headsetId == headset.headsetId) {
-    ondeck1GraphSerieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
-  } else if(ondeck2Graph.headsetId == headset.headsetId) {
-    ondeck2GraphSerieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
+  if(headset.graph && !isPlayingGraph(headset.graph)) {
+    headset.graph.serieses[eegChangedEvent.eventType].append(new Date().getTime(), eegChangedEvent.value);
   }
 }
 
@@ -275,7 +278,7 @@ function displayPlayerData(headset) {
     $(container + " .score").text(headset.score);
     $(container + " .level").text(headset.level);
     $(container + " .headset").text(headset.number);
-    // $(container + " .middle .side" + headset.deviceId + " .measurement-type").text("");
+    $(container + " .measurement-type").text(headset.measurementType);
   }
 }
 
@@ -326,6 +329,20 @@ function removeGraphFromAllHeadsets(graph) {
         }
     }
   }
+}
+
+function getFirstOpenOnDeckGraph() {
+  var ondeck1Taken = false;
+  var ondeck2Taken = false;
+  for (var property in HEADSETS) {
+    if (HEADSETS.hasOwnProperty(property)) {
+        if(HEADSETS[property].graph == ondeck1Graph) ondeck1Taken = true;
+        else if(HEADSETS[property].graph == ondeck2Graph) ondeck2Taken = true;
+    }
+  }
+  if(ondeck1Taken && ondeck2Taken) return null;
+  if(!ondeck1Taken) return ondeck1Graph;
+  if(!ondeck2Taken) return ondeck2Graph;
 }
 
 function padZero(str) {

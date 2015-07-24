@@ -1,6 +1,6 @@
 body {
       /* background: url('img/binding_dark.png'); */
-      background-image: url('img/batthern.png');
+      background-image: url('../img/batthern.png');
       color: black;
     }
 
@@ -19,7 +19,7 @@ body {
       padding-top: 2%;*/
       /*margin-top:2px;*/
       background-color: white;
-      background-image: url('img/gplay.png');
+      background-image: url('../img/gplay.png');
       color: black;
 
       -webkit-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
@@ -45,15 +45,25 @@ body {
       margin-top: 20%;
     }
 
-    .headset, .level, .score {
+    .headset, .level, .score, .measurement-type {
       font-size: 730%;
       color: black;
       -webkit-text-fill-color: #FFB700;
       -webkit-text-stroke-width: 1px;
       -webkit-text-stroke-color: #E0A100;
     }
+    
+    .measurement-type {
+      font-size: 180%;
+	  margin-top: 30px;
+    }
+    
+    .label.measurement-type {
+	    margin-top: 60px;
+	    margin-bottom: 20px;
+	}
 
-    .label.headset, .label.level, .label.score {
+    .label.headset, .label.level, .label.score, .label.measurement-type {
       font-size: 350%;
       color: black;
       -webkit-text-fill-color: black;
@@ -82,10 +92,10 @@ body {
     }
 
     .separator-container {
-      margin-top: 187px;
+      margin-top: 111px;
       border-top: 1px solid rgb(107, 107, 107);
       /* border-bottom: 1px solid rgb(107, 107, 107);*/
-      background-image: url('img/on_deck_bkg.png');
+      background-image: url('../img/on_deck_bkg.png');
     }
 
     /* On Deck text element */
@@ -104,7 +114,7 @@ body {
     }
 
     .ondeck-container {
-      background: url('img/binding_dark.png');
+      background: url('../img/binding_dark.png');
       /*background-image: url('img/batthern.png');*/
     }
 

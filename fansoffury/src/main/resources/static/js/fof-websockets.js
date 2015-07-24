@@ -1,6 +1,7 @@
+var prefix = "http://localhost:8080";
 var scoreWs = null;
 function connectScoreListener(onOpenCallback, onMessageCallback, onCloseCallback) {
-	var target = "/ws/score";
+	var target = prefix + "/ws/score";
 	scoreWs = new SockJS(target);
 	scoreWs.onopen = function () {
 		log('Info: /ws/score WebSocket connection opened.');
@@ -25,7 +26,7 @@ function disconnectScoreListener() {
 
 var eegWs = null;
 function connectEegListener(onOpenCallback, onMessageCallback, onCloseCallback) {
-	var target = "/ws/eeg";
+	var target = prefix + "/ws/eeg";
 	eegWs = new SockJS(target);
 	eegWs.onopen = function () {
 		log('Info: /ws/eeg WebSocket connection opened.');

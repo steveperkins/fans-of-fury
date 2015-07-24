@@ -68,7 +68,21 @@ h4 {
 
 	<p>On startup, the fan controller uses the bidirectional nature of websockets to register itself and its two distinct fans with the server. Clients can then configure games/players/headsets and listen to score and EEG changes.</p>
 	<p>The quadcopter motors are controlled by an Electronic Speed Controller, which varies the motor voltage on receiving PWM (Pulse Width Modulation) signals.
-<p>The Pi listens to an event stream from the server, parses the events, and sends appropriate PWM signals to the ESCs.</p>
+	<p>The Pi listens to an event stream from the server, parses the events, and sends appropriate PWM signals to the ESCs.</p>
+	
+	The expected game flow is:
+	<ol>
+		<li>Booth Worker puts headset on Person A, scans their QR code, and moves them to the On Deck area</li>
+		<li>Booth Worker hits button on mobile app to assign Person A's QR code to their headset number</li>
+		<li>When a player spot opens up, Booth Worker moves Person A to a game side</li>
+		<li>Booth Worker hits button on mobile app to assign Person A to the game side they're on and Person A becomes Player A</li>
+		<li>...cue wild cheering and intense concentration...</li>
+		<li>Booth Worker takes next person in line, Person B, and repeats the first few steps</li>
+		<li>When Player A finishes, he removes the headset and his position is now open</li>
+		<li>When Booth Worker assigns Person B to the former Player A's side, former Player A's headset begins showing data in the first available On Deck scoreboard graph</li>
+	</ol>
+	
+	<p>Note: At this time the code detecting headset state in score.html will not show the very first not-playing headset EEG data. When the page is first loaded you will have to manually assign a headset to a game side, then replace it with each of the other headsets in turn.</p>    
 
 
 <h2>Interfaces</h2>

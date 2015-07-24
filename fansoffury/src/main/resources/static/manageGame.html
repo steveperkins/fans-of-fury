@@ -43,6 +43,7 @@
 			<p>Click the Quick Setup button to send all the calls necessary to start listening to websocket events as a fan controller (Raspberry Pi with motors hooked up) and a score listener (e.g. scoreboard display).</p>
 			<button id="quickSetup" onclick="quickSetup();">Quick Setup</button>
 			<button id="quickSetup2" onclick="quickSetup2();">Quick Setup 2 (just create headsets/players and start listening)</button>
+			<button id="quickSetupScoreboardAddendum" onclick="quickSetupScoreboardAddendum();">Quick setup for scoreboard</button>
 			<div>
 				<table>
 					<tr>
@@ -343,8 +344,34 @@
 		refreshHeadsetDisplay(createHeadset2());
 		refreshHeadsetDisplay(createHeadset3());
 		refreshHeadsetDisplay(createHeadset4());
+	}
+	
+	function quickSetupScoreboardAddendum() {
+		connectFanControllerListener();
 		
-		connectScoreListener();
+		setTimeout(function() {
+			refreshHeadsetDisplay(createHeadset1());
+			refreshHeadsetDisplay(createHeadset2());
+			refreshHeadsetDisplay(createHeadset3());
+			refreshHeadsetDisplay(createHeadset4());
+			
+			disconnectFanControllerListener();
+			
+			/* This part exists to overcome a limitation of the scoreboard */
+			// Assign headsets 3 and 4 to fans
+			// Assign headsets 1 and 2 to 3 and 4's fans, ending 3 and 4's sessions and making them available to on-deck users
+			HEADSET_3.fanId = "0";
+			assignHeadset(HEADSET_3);
+			HEADSET_4.fanId = "1";
+			assignHeadset(HEADSET_4);
+			
+			setTimeout(function() {
+			HEADSET_1.fanId = "0";
+			assignHeadset(HEADSET_1);
+			HEADSET_2.fanId = "1";
+			assignHeadset(HEADSET_2);
+			}, 500);	
+		}, 1000);
 	}
 	
 	function createHeadset1() {
