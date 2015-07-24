@@ -1,0 +1,174 @@
+<html>
+<head>
+<title>Fans of Fury Server Readme</title>
+<style>
+body {
+	font-family: sans-serif;
+}
+
+h2 {
+	border-bottom: 1px solid black;
+}
+
+h4 {
+	font-family: monospace;
+  font-size: 140%;
+}
+
+.code {
+	font-family: monospace;
+}
+</style>
+</head>
+<body>
+<h2>Building / Running in Eclipse</h2>
+<div>
+	<p>The code is at http://apptfs:8080/tfs/OMNI_TFS/OmniGit/_git/ThatConference2015.</p>
+	<p>The project probably won't build initially until you set the appropriate facets.  To do so:</p>
+	<ul>
+		<li>Click Project/Properties and go to the Project Facets area</li>
+		<li>Select Dynamic Web Module and Java, then click Apply and OK</li>
+	</ul>
+	<p>Start the server by running com.omni.fansoffury.FansOfFuryWebApplication as a Java application.</p>
+</div>
+<h2>Database configuration</h2>
+<div>
+	<p>install <a href="postgresql.com">postgres</a></p>
+	<p>
+		if you are using Mac OS X consider installing <a href="ttp://postgresapp.com">postgres.app</a> which will setup a
+		default database with the same name as your mac user.  A db user will also be created without a password that
+		has the same name as your mac user.
+	</p>
+
+	<p>
+		in application.properties configure following properties:
+		<dl>
+			<dt>spring.datasource.url</dt>
+			<dd>jdbc:postgresql://localhost:{dbport: defaults to 5432}/{dbname}</dd>
+
+			<dt>spring.datasource.username</dt>
+			<dd>postgres usernaame</dd>
+
+			<dt>spring.datasource.password</dt>
+			<dd>postgres password</dd>
+
+			<dt>spring.datasource.initialize</dt>
+			<dd>true - will drop and create the schema from the sql/createFoF.sql everytime the app is launched</dd>
+		</dl>
+</div>
+<h2>General Info</h2>
+	The Fans of Fury server provides a central point of communication for the various devices associated with the Fans of Fury game. There are five main integration points:
+	<ol>
+		<li>EEG headset to server machine (Bluetooth)</li>
+		<li>Mobile app to server (HTTP - REST)</li>
+		<li>Server to scoreboard display (HTTP - websockets)</li>
+		<li>Server to EEG graph display (HTTP - websockets)</li>
+		<li>Server to fan controller/Raspberry Pi (HTTP _ websockets)</li>
+	</ol>
+
+	<p>On startup, the fan controller uses the bidirectional nature of websockets to register itself and its two distinct fans with the server. Clients can then configure games/players/headsets and listen to score and EEG changes.</p>
+	<p>The quadcopter motors are controlled by an Electronic Speed Controller, which varies the motor voltage on receiving PWM (Pulse Width Modulation) signals.
+<p>The Pi listens to an event stream from the server, parses the events, and sends appropriate PWM signals to the ESCs.</p>
+
+
+<h2>Interfaces</h2>
+	<h3>REST</h3>
+	<div>
+		<p>All REST endpoints return JSON objects. All JSON objects are analogous to the com.omni.fansoffury.model.json.JsonResponse Java type.</p>
+		<p>If an operation is successful, the returned object will have these traits:</p>
+		<ul class="code">
+			<li>.status == "success"</li>
+			<li>.errors == undefined</li>
+			<li>.isError == false</li>
+		</ul>
+		<p>If the operation returns an object, the object will be accessible as response.object.</p>
+		<h4>GET/PUT/POST /api/player/setuptest</h4>
+		<div>
+			Automated player/headset/fan configuration endpoint
+			<ul>
+				<li>Creates players with IDs "0" and "1"</li>
+				<li>Maps Player 0 to headset 0 and fan 0</li>
+				<li>Maps Player 1 to headset 1 and fan 1</li>
+				<li><strong>Does not register a device controller - must be invoked after devices have been registered</strong></li>
+			</ul>
+		</div>
+
+		<h4>GET /api/player/{STR playerId}</h4>
+		<div>
+			Retrieves the player with the ID {playerId}.
+			<div class="code">
+				{"status":"success","message":null,"errors":null,"object":{"id":"0","attentionLevel":0.0,"meditationLevel":0.0,"headsetId":null,"measurementType":"ATTENTION","score":0},"error":false}
+			</div>
+		</div>
+
+		<h4>PUT /api/player</h4>
+		<div>
+			Assigns the player with ID {playerId} to a headset and possibly a fan based on the JSON in the request body. If the fanId property is null or omitted, the player is assigned to the specified headset but not a fan. If the player was already assigned to a fan, they are unassigned and their 'session' ended.
+			<div class="code">
+				{playerId: "0", headsetId: "74E543D575B0", measurementType: "ATTENTION", fanId: "0"}
+			</div>
+		</div>
+
+		<h4>GET /api/devices</h4>
+		<div>
+			Retrieves the list of currently-registered devices.
+			<div class="code">
+				{"status":"success","message":null,"errors":null,"object":[{"id":"0","type":"fan","minInputValue":9.0,"maxInputValue":15.0,"deviceController":null},{"id":"1","type":"fan","minInputValue":9.0,"maxInputValue":15.0,"deviceController":null}],"error":false}
+			</div>
+		</div>
+	</div>
+	<h3>Websockets</h3>
+	<div>
+		<p>All websocket messages, amazingly enough, subclasses of com.omni.fansoffury.model.message.WebSocketMessage. Every message has a <span class="code">messageType</span> property that can be inspected to determine what type of message is being passed.</p>
+		<p>Message classes are in the <span class="code">com.omni.fansoffury.socket.handler</span> package.
+
+		<h4>/ws/eeg</h4>
+		<div>
+			<p>Streams headset Attention/Meditation events.</p>
+			<p>Example message:</p>
+			<div class="code">
+				{"player":{"id":"0","level":0.0,"headset":{"id":"74E543D575B0"},"measurementType":"ATTENTION","score":1},"eventType":"ATTENTION","value":60}
+			</div>
+			<p>Messages on this socket are analagous to the <span class="code">com.omni.fansoffury.model.event.EegChangedEvent</span> Java type.</p>
+		</div>
+
+		<h4>/ws/score</h4>
+		<div>
+			<p>Streams player score change events.</p>
+			<p>Example message:</p>
+			<div class="code">
+				{"player":{"id":"0","level":0.0,"headset":{"id":"74E543D575B0"},"measurementType":"ATTENTION","score":1},"eventType":"ATTENTION","value":60}
+			</div>
+			<p>Messages on this socket are analagous to the <span class="code">com.omni.fansoffury.model.event.ScoreChangedEvent</span> Java type.</p>
+		</div>
+
+		<h4>/ws/fancontroller</h4>
+		<div>
+			<p>Streams fan speed change events. Also reacts to <span class="code">DeviceControllerRegistrationEvent</span>s and <span class="code">DeviceScoreChangeEvent</span>s.</p>
+			<p>Example fan speed change messages:</p>
+			<div class="code">
+				{"newSpeed":11.87,"device":{"id":"0","type":"fan","minInputValue":9.0,"maxInputValue":15.0}}
+				<br />
+				{"newSpeed":9.98,"device":{"id":"1","type":"fan","minInputValue":9.0,"maxInputValue":15.0}}
+			</div>
+
+			<p>Example device controller registration message:</p>
+			<div class="code">
+				{"messageType":"DEVICE_CONTROLLER_REGISTRATION","deviceController":{"id":"0","devices":[{"id":"0","type":"fan","minInputValue":9,"maxInputValue":15},{"id":"1","type":"fan","minInputValue":9,"maxInputValue":15}]}}
+			</div>
+
+			<p>Example score change messages:</p>
+			<div class="code">
+				{"player":{"id":"0","level":0.0,"headset":{"id":"74E543D575B0"},"measurementType":"ATTENTION","score":1},"newScore":1}
+				<br />
+				{"player":{"id":"1","level":5.1,"headset":{"id":"20689D4C0A08"},"measurementType":"ATTENTION","score":18},"newScore":18}
+			</div>
+
+			<p>When a device controller comes online it should register itself and its attached devices by sending a <span class="code">DeviceControllerRegistrationEvent</span>. Once the device controller is registered, the server begins sending <span class="code">FanSpeedChangeEvent</span>s so the device controller can modify the speed of its fans.</p>
+			<p>When the device controller has reason to believe a player has scored (e.g. a sensor is tripped), it should send a <span class="code">DeviceScoreChangeEvent</span> containing the fan ID. The server will look up the player associated with that fan ID and send the appropriate <span class="code">ScoreChangedEvent</span> to all listeners on the <span class="code">/ws/score</span> endpoint.</p>
+		</div>
+
+	</div>
+
+</body>
+</html>

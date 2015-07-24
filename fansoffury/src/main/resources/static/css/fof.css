@@ -1,0 +1,128 @@
+body {
+      /* background: url('img/binding_dark.png'); */
+      background-image: url('img/batthern.png');
+      color: black;
+    }
+
+    .border.top {
+      background-color: black;
+      height: 0px;
+    }
+
+    .border.bottom {
+      background-color: black;
+      height: 0px;
+    }
+
+    .playing-container .middle {
+      text-align: center;
+      padding-top: 2%;*/
+      /*margin-top:2px;*/
+      background-color: white;
+      background-image: url('img/gplay.png');
+      color: black;
+
+      -webkit-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
+      -moz-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
+      box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
+    }
+
+    .playing-container {
+      height: 65%;
+    }
+
+    .separator-container {
+      text-align: center;
+      margin-top:40px;
+    }
+
+    .ondeck-container {
+      height: 30%;
+      text-align: center;
+    }
+
+    .label {
+      margin-top: 20%;
+    }
+
+    .headset, .level, .score {
+      font-size: 730%;
+      color: black;
+      -webkit-text-fill-color: #FFB700;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: #E0A100;
+    }
+
+    .label.headset, .label.level, .label.score {
+      font-size: 350%;
+      color: black;
+      -webkit-text-fill-color: black;
+      -webkit-text-stroke-color: #525252;
+    }
+
+    .playing-container .play-time {
+      font-size: 200%;
+    }
+
+    .playing-container .left .play-time {
+      text-align: right;
+      margin-right: 20px;
+    }
+
+    .playing-container .right .play-time {
+      text-align: left;
+      margin-left: 20px;
+    }
+
+    .playing-container .side0 {
+      text-align: right;
+    }
+    .playing-container .side1 {
+      text-align: left;
+    }
+
+    .separator-container {
+      margin-top: 187px;
+      border-top: 1px solid rgb(107, 107, 107);
+      /* border-bottom: 1px solid rgb(107, 107, 107);*/
+      background-image: url('img/on_deck_bkg.png');
+    }
+
+    /* On Deck text element */
+    .separator-container .text {
+      display: inline-block;
+      font-size: 230%;
+      font-weight: bold;
+      color: black;
+      -webkit-text-fill-color: black;
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: ##FF9D2E;
+    }
+
+    .ondeck-container .middle img {
+      margin-top: 40px;
+    }
+
+    .ondeck-container {
+      background: url('img/binding_dark.png');
+      /*background-image: url('img/batthern.png');*/
+    }
+
+    .ondeck-container h1 {
+      color: white;
+    }
+
+    #side0-graph, #side1-graph, #ondeck1-graph, #ondeck2-graph {
+      width:600px;
+      height:400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #ondeck1-graph, #ondeck2-graph {
+        height: 295px;
+        width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 2px solid gray;
+    }

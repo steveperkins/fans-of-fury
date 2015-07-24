@@ -1,6 +1,8 @@
 package com.omni.fansoffury.model.event;
 
-import com.omni.fansoffury.model.Player;
+import java.util.Date;
+
+import com.omni.fansoffury.model.Headset;
 
 /**
  * Generated when a player's score changes
@@ -8,25 +10,36 @@ import com.omni.fansoffury.model.Player;
  *
  */
 public class ScoreChangedEvent {
-	private Player player;
 	private Integer newScore;
+	private Headset headset;
+	private Long timestamp = new Date().getTime();
 	
-	public ScoreChangedEvent(Player player, Integer newScore) {
+	public ScoreChangedEvent(Headset headset, Integer newScore) {
 		super();
-		this.player = player;
+		this.setHeadset(headset);
 		this.newScore = newScore;
 	}
 	
-	public Player getPlayer() {
-		return player;
+	public Headset getHeadset() {
+		return headset;
 	}
-	public void setPlayer(Player player) {
-		this.player = player;
+
+	public void setHeadset(Headset headset) {
+		this.headset = headset;
 	}
+
 	public Integer getNewScore() {
 		return newScore;
 	}
 	public void setNewScore(Integer newScore) {
 		this.newScore = newScore;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

@@ -15,6 +15,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.google.gson.Gson;
 import com.omni.fansoffury.device.DeviceService;
+import com.omni.fansoffury.headset.service.HeadsetService;
+import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.Player;
 import com.omni.fansoffury.model.device.Device;
 import com.omni.fansoffury.model.event.ScoreChangedEvent;
@@ -22,7 +24,6 @@ import com.omni.fansoffury.model.message.DeviceControllerRegistrationEvent;
 import com.omni.fansoffury.model.message.DeviceScoreChangeEvent;
 import com.omni.fansoffury.model.message.WebSocketMessage;
 import com.omni.fansoffury.model.message.WebsocketMessageType;
-import com.omni.fansoffury.player.PlayerService;
 import com.omni.fansoffury.player.ScoreService;
 import com.omni.fansoffury.service.FanControllerService;
 
@@ -46,7 +47,7 @@ public class FanControllerSocketListener extends TextWebSocketHandler {
 	private FanControllerService fanControllerService;
 	
 	@Autowired
-	private PlayerService playerService;
+	private HeadsetService headsetService;
 	
 	@Autowired
 	private ScoreService scoreService;
@@ -95,10 +96,11 @@ public class FanControllerSocketListener extends TextWebSocketHandler {
 		DeviceScoreChangeEvent event = new Gson().fromJson(message.getPayload(), DeviceScoreChangeEvent.class);
 		if(null != event && null != event.getDevice()) {
 			logger.info("Score changed for device {}", event.getDevice().getId());
-			Player player = playerService.getPlayer(event.getDevice());
-			if(null != player) {
+			Headset headset = headsetService.getByDeviceId(event.getDevice().getId());
+			if(null != headset && null != headset.getPlayer()) {
+				Player player = headset.getPlayer();
 				player.setScore(player.getScore() + 1);
-				ScoreChangedEvent scoreChangedEvent = new ScoreChangedEvent(player, player.getScore());
+				ScoreChangedEvent scoreChangedEvent = new ScoreChangedEvent(headset, player.getScore());
 				scoreService.raiseEvent(scoreChangedEvent);
 			} else {
 				logger.error("Score change event received for device ID " + event.getDevice().getId() + " with no associated player");

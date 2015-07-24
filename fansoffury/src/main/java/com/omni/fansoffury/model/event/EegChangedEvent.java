@@ -1,6 +1,8 @@
 package com.omni.fansoffury.model.event;
 
-import com.omni.fansoffury.model.Player;
+import java.util.Date;
+
+import com.omni.fansoffury.model.Headset;
 import com.sperkins.mindwave.event.EventType;
 
 /**
@@ -9,33 +11,26 @@ import com.sperkins.mindwave.event.EventType;
  *
  */
 public class EegChangedEvent {
-	private Player player;
-	private String headsetId;
+	private Headset headset;
 	private EventType eventType;
 	private Integer value;
+	private Long timestamp = new Date().getTime();
 	
-	public EegChangedEvent(Player player, EventType eventType, Integer value) {
+	public EegChangedEvent(Headset headset, EventType eventType, Integer value) {
 		super();
-		this.player = player;
+		this.headset = headset;
 		this.eventType = eventType;
 		this.value = value;
 	}
 	
-	public Player getPlayer() {
-		return player;
-	}
-	public void setPlayer(Player player) {
-		this.player = player;
+	public Headset getHeadset() {
+		return headset;
 	}
 
-	public String getHeadsetId() {
-		return headsetId;
+	public void setHeadset(Headset headset) {
+		this.headset = headset;
 	}
-
-	public void setHeadsetId(String headsetId) {
-		this.headsetId = headsetId;
-	}
-
+	
 	public EventType getEventType() {
 		return eventType;
 	}
@@ -50,6 +45,14 @@ public class EegChangedEvent {
 
 	public void setValue(Integer value) {
 		this.value = value;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 }

@@ -39,6 +39,8 @@ public class BluetoothSocketServiceImpl implements BluetoothSocketService {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
         
         System.out.println("Bluetooth socket listener started");

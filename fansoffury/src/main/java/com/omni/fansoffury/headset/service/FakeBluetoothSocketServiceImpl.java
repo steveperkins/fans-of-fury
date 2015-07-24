@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.omni.fansoffury.headset.listener.FanControlMindwaveEventListener;
 import com.omni.fansoffury.model.Headset;
+import com.omni.fansoffury.model.Player;
 import com.sperkins.mindwave.event.AttentionEvent;
 import com.sperkins.mindwave.event.Event;
 import com.sperkins.mindwave.event.EventType;
@@ -70,13 +71,15 @@ public class FakeBluetoothSocketServiceImpl implements BluetoothSocketService {
 			while(keepRunning) {
 				List<FanControlMindwaveEventListener> fanControlListenersCopy = new ArrayList<FanControlMindwaveEventListener>(fanControlListeners);
 				for(FanControlMindwaveEventListener listener: fanControlListenersCopy) {
-					if(null != listener && null != listener.getPlayer() && null != listener.getPlayer().getHeadset()) {
+					if(null != listener && null != listener.getHeadset() && null != listener.getHeadset().getPlayer()) {
 						Event event = null;
 						Integer newValue = random.nextInt(100);
-						if(EventType.ATTENTION.equals(listener.getPlayer().getMeasurementType())) {
-							event = new AttentionEvent(listener.getPlayer().getHeadset().getId(), newValue);
-						} else if(EventType.MEDITATION.equals(listener.getPlayer().getMeasurementType())) {
-							event = new MeditationEvent(listener.getPlayer().getHeadset().getId(), newValue);
+						
+						Player player = listener.getHeadset().getPlayer();
+						if(EventType.ATTENTION.equals(player.getMeasurementType())) {
+							event = new AttentionEvent(listener.getHeadset().getId(), newValue);
+						} else if(EventType.MEDITATION.equals(player.getMeasurementType())) {
+							event = new MeditationEvent(listener.getHeadset().getId(), newValue);
 						}
 						logger.debug("FAKE: Generating new {} event with value {}", event.getEventType().name(), newValue);
 						listener.onEvent(event);
@@ -86,11 +89,12 @@ public class FakeBluetoothSocketServiceImpl implements BluetoothSocketService {
 				List<Headset> headsetsCopy = new ArrayList<Headset>(headsetService.getHeadsets());
 				List<MindwaveEventListener> listenersCopy = new ArrayList<MindwaveEventListener>(listeners);
 				for(Headset headset: headsetsCopy) {
+					String headsetId = headset.getId();
 					Integer newValue = random.nextInt(100);
-					AttentionEvent attentionEvent = new AttentionEvent(headset.getId(), newValue);
+					AttentionEvent attentionEvent = new AttentionEvent(headsetId, newValue);
 					
 					newValue = random.nextInt(100);
-					MeditationEvent meditationEvent = new MeditationEvent(headset.getId(), newValue);
+					MeditationEvent meditationEvent = new MeditationEvent(headsetId, newValue);
 					
 					for(MindwaveEventListener listener: listenersCopy) {
 						logger.debug("FAKE: Generating new {} event with value {}", attentionEvent.getEventType().name(), attentionEvent.getValue());

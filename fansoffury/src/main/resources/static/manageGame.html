@@ -42,6 +42,7 @@
 		<div>
 			<p>Click the Quick Setup button to send all the calls necessary to start listening to websocket events as a fan controller (Raspberry Pi with motors hooked up) and a score listener (e.g. scoreboard display).</p>
 			<button id="quickSetup" onclick="quickSetup();">Quick Setup</button>
+			<button id="quickSetup2" onclick="quickSetup2();">Quick Setup 2 (just create headsets/players and start listening)</button>
 			<div>
 				<table>
 					<tr>
@@ -54,13 +55,22 @@
 						<td>Player 1 measurement type:</td><td>ATTENTION</td>
 					</tr>
 					<tr>
-						<td>Player 2 headset ID</td><td>20689D4C0A08 (#3)</td>
+						<td>Player 2 headset ID</td><td>20689D88BC4A (#2)</td>
 					</tr>
 					<tr>
 						<td>Player 2 device ID</td><td>1</td>
 					</tr>
 					<tr>
-						<td>Player 2 measurement type:</td><td>ATTENTION</td>
+						<td>Player 2 measurement type:</td><td>MEDITATION</td>
+					</tr>
+					<tr>
+						<td>Player 3 headset ID</td><td>20689D4C0A08 (#3)</td>
+					</tr>
+					<tr>
+						<td>Player 3 device ID</td><td>2</td>
+					</tr>
+					<tr>
+						<td>Player 3 measurement type:</td><td>ATTENTION</td>
 					</tr>
 					<tr>
 						<td>Score websocket URL:</td><td>/ws/score</td>
@@ -75,12 +85,8 @@
 					<li>Connect score websocket listener</li>
 					<li>Connect fan controller websocket listener</li>
 					<li>Send message through fan controller websocket defining the devices available on the game board</li>
-					<li>Send a PUT request to create Player 1 with the QR code ID "0"</li>
-					<li>Map Player 1 to headset ID 74E543D575B0</li>
-					<li>Map Player 1 to device (fan/side of the table) ID 0</li>
-					<li>Send a PUT request to create Player 2 with the given QR code ID "1"</li>
-					<li>Map Player 2 to headset ID 20689D4C0A08</li>
-					<li>Map Player 2 to device (fan/side of the table) ID 1</li>
+					<li>Send a PUT request to create headset and assign to a player</li>
+					<li>Repeat for all headsets</li>
 					<li>Connect EEG websocket listener</li>
 				</ul>
 		</div>
@@ -106,22 +112,67 @@
 			<p>Fake headset events are generated every second. You can disconnect this socket listener if the messages pollute your output.</p>
 		</div>
 		
-		<h2>Map player IDs to headset IDs</h2>
-		<p>A player has to be mapped to an EEG headset ID and a device (e.g. a fan) ID.</p>		
-		<button id="mapPlayer0ToHeadset1" class="messageButton" onclick="mapPlayer0ToHeadset1();">Map player 0 to headset 1</button>
-		<button id="mapPlayer1ToHeadset3" class="messageButton" onclick="mapPlayer1ToHeadset3();">Map player 1 to headset 3</button>
-
-		<div id="mapPlayerIdToHeadsetId">
-			Player ID: <textarea class="playerId" style="width: 350px">0</textarea>
-			Headset ID: <textarea class="headsetId" style="width: 350px">74E543D575B0</textarea>
-			<button id="mapPlayerIdToHeadsetIdButton" class="messageButton" onclick="mapPlayerIdToHeadsetId();">Go</button>
+		<h2>Headsets</h2>
+		<div id="headsets">
+			<div class="74E543D575B0">
+				<h3>Headset 1</h3>
+				<div>Player ID:<span class="player-id"></span></div>
+				<div>Headset ID:<span class="headset-id">74E543D575B0</span></div>
+				<div>Measurement:<span class="measurement-type"></span></div>
+				<div>Fan ID:<span class="fan-id"></span></div>
+			</div>
+			<div class="20689D88BC4A">
+				<h3>Headset 2</h3>
+				<div>Player ID:<span class="player-id"></span></div>
+				<span class="headset-id">20689D88BC4A</span>
+				<div>Measurement:<span class="measurement-type"></span></div>
+				<div>Fan ID:<span class="fan-id"></span></div>
+			</div>
+			<div class="20689D4C0A08">
+				<h3>Headset 3</h3>
+				<div>Player ID:<span class="player-id"></span></div>
+				<span class="headset-id">20689D4C0A08</span>
+				<div>Measurement:<span class="measurement-type"></span></div>
+				<div>Fan ID:<span class="fan-id"></span></div>
+			</div>
+			<div class="11111">
+				<h3>Headset 4</h3>
+				<div>Player ID:<span class="player-id"></span></div>
+				<span class="headset-id">11111</span>
+				<div>Measurement:<span class="measurement-type"></span></div>
+				<div>Fan ID:<span class="fan-id"></span></div>
+			</div>
 		</div>
 		
-		<h2>Map player ID to device ID</h2>		
-		<div id="mapPlayerIdToDeviceId">
+		<h2>Assign headset</h2>
+		<div id="assignHeadset">
+			<button id="loadHeadset1" onclick="loadHeadset1()">Headset 1</button>
+			<button id="loadHeadset2" onclick="loadHeadset2()">Headset 2</button>
+			<button id="loadHeadset3" onclick="loadHeadset3()">Headset 3</button>
+			<button id="loadHeadset4" onclick="loadHeadset4()">Headset 4</button>
+			<br />
 			Player ID: <textarea class="playerId" style="width: 350px">0</textarea>
-			Device ID: <textarea class="deviceId" style="width: 350px">0</textarea>
-			<button id="mapPlayerIdToDeviceIdButton" class="messageButton" onclick="mapPlayerIdToDeviceId();">Go</button>
+			Headset: 
+			<select class="headsetId">
+				<option value="74E543D575B0">Headset 1</option>
+				<option value="20689D88BC4A">Headset 2</option>
+				<option value="20689D4C0A08">Headset 3</option>
+				<option value="11111">Headset 4</option>
+			</select>
+			<br />
+			Measurement type: 
+			<select class="measurementType">
+				<option value="ATTENTION">Attention</option>
+				<option value="MEDITATION">Meditation</option>
+			</select>
+			<br />
+			Fan ID: 
+			<select class="fanId">
+				<option value="none">None (select if fan controller isn't registered)</option>
+				<option value="0">0</option>
+				<option value="1">1</option>
+			</select>
+			<button id="assignHeadsetButton" class="messageButton" onclick="submitAssignHeadsetForm();">Go</button>
 		</div>
 		
 	</div>
@@ -133,28 +184,6 @@
 <script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/sockjs.min.js"></script>
 <script type="text/javascript">
-	var fanControllerConnected = false;
-	
-	function quickSetup() {
-		createPlayer("0");
-		createPlayer("1");
-		connectScoreListener();
-		connectFanControllerListener();
-		var fanControllerSetupInterval = setInterval(function() {
-			// We have to wait until the fan controller's devices have been registered
-			if(fanControllerConnected) {
-				clearInterval(fanControllerSetupInterval);
-				
-				mapPlayer0ToHeadset1();
-				mapPlayer1ToHeadset2();
-				
-				connectEegListener();
-				log("Quick Setup done");
-			}
-		}, 100);
-	}
-
-
 	var fanControllerWs = null;
 	function connectFanControllerListener() {
 		var target = "/ws/fancontroller";
@@ -276,57 +305,143 @@
 	}
 	
 	
+	var HEADSET_1 = {};
+	var HEADSET_2 = {};
+	var HEADSET_3 = {};
+	var HEADSET_4 = {};
+	var fanControllerConnected = false;
 	
-	function mapPlayerIdToHeadsetId() {
-		var playerId = $("#mapPlayerIdToHeadsetId .playerId").val();
-		var headsetId = $("#mapPlayerIdToHeadsetId .headsetId").val();
-		mapPlayerToHeadset(playerId, headsetId, "ATTENTION");
-	}
-	
-	function mapPlayerIdToDeviceId() {
-		var playerId = $("#mapPlayerIdToDeviceId .playerId").val();
-		var deviceId = $("#mapPlayerIdToDeviceId .deviceId").val();
-		mapPlayerToDevice(playerId, deviceId);
+	function quickSetup() {
+		refreshHeadsetDisplay(createHeadset1());
+		refreshHeadsetDisplay(createHeadset2());
+		refreshHeadsetDisplay(createHeadset3());
+		refreshHeadsetDisplay(createHeadset4());
 		
-		var url = "/api/player/map/" + playerId + "/device/" + deviceId;
-		sendRestMessage(url, "PUT", null, function(response) {
-			log("Mapped player " + playerId + " to device " + deviceId);
-		});
+		connectScoreListener();
+		connectFanControllerListener();
+		var fanControllerSetupInterval = setInterval(function() {
+			// We have to wait until the fan controller's devices have been registered
+			if(fanControllerConnected) {
+				clearInterval(fanControllerSetupInterval);
+				
+				HEADSET_1.fanId = "0";
+				assignHeadset(HEADSET_1);
+				refreshHeadsetDisplay(HEADSET_1);
+				
+				HEADSET_2.fanId = "1";
+				assignHeadset(HEADSET_2);
+				refreshHeadsetDisplay(HEADSET_2);
+				
+				connectEegListener();
+				log("Quick Setup done");
+			}
+		}, 100);
+	}
+
+	function quickSetup2() {
+		refreshHeadsetDisplay(createHeadset1());
+		refreshHeadsetDisplay(createHeadset2());
+		refreshHeadsetDisplay(createHeadset3());
+		refreshHeadsetDisplay(createHeadset4());
+		
+		connectScoreListener();
 	}
 	
-	function createPlayer(playerId) {
-		var url = "/api/player/" + playerId;
-		sendRestMessage(url, "PUT", null, function(response) {
-			log("Created player " + playerId);
-		});
-	}
-	function mapPlayerToHeadset(playerId, headsetId, measurementType) {
-		var url = "/api/player/map/" + playerId + "/headset/" + headsetId + "/measurement/" + measurementType;
-		sendRestMessage(url, "PUT", null, function(response) {
-			log("Mapped player " + playerId + " to headset " + headsetId);
-		});
-	}
-	function mapPlayerToDevice(playerId, deviceId) {
-		var url = "/api/player/map/" + playerId + "/device/" + deviceId;
-		sendRestMessage(url, "PUT", null, function(response) {
-			log("Mapped player " + playerId + " to device " + deviceId);
-		});
-	}
-	function mapPlayer0ToHeadset1() {
-		mapPlayerToHeadset("0", "74E543D575B0", "ATTENTION");
-		mapPlayerToDevice("0", "0");
+	function createHeadset1() {
+		// Create first headset/player
+		HEADSET_1 = {
+			playerId: "1",
+			headsetId: "74E543D575B0",
+			measurementType: "ATTENTION",
+		}
+		assignHeadset(HEADSET_1);
+		return HEADSET_1;
 	}
 	
-	function mapPlayer1ToHeadset2() {
-		mapPlayerToHeadset("1", "20689D4C0A08", "ATTENTION");
-		mapPlayerToDevice("1", "1");
+	function createHeadset2() {
+		// Create second headset/player
+		HEADSET_2 = {
+			playerId: "2",
+			headsetId: "20689D88BC4A",
+			measurementType: "MEDITATION",
+		}
+		assignHeadset(HEADSET_2);
+		return HEADSET_2;
+	}
+	
+	function createHeadset3() {
+		// Create third headset/player
+		HEADSET_3 = {
+			playerId: "3",
+			headsetId: "20689D4C0A08",
+			measurementType: "ATTENTION",
+		}
+		assignHeadset(HEADSET_3);
+		return HEADSET_3;
+	}
+	
+	function createHeadset4() {
+		// Create third headset/player
+		HEADSET_4 = {
+			playerId: "4",
+			headsetId: "11111",
+			measurementType: "MEDITATION",
+		}
+		assignHeadset(HEADSET_4);
+		return HEADSET_4;
+	}
+	
+	function loadHeadset(headset) {
+		var playerId = $("#assignHeadset .playerId").val(headset.playerId);
+		$("#assignHeadset .headsetId option[value=" + headset.headsetId + "]").prop('selected', true);
+		$("#assignHeadset .measurementType option[value=" + headset.measurementType + "]").prop('selected', true);
+		var fanId = headset.fanId;
+		if(!fanId) fanId = "none";
+		$("#assignHeadset .fanId option[value=" + fanId + "]").prop('selected', true);
+	}
+	
+	function loadHeadset1() { loadHeadset(HEADSET_1); }
+	function loadHeadset2() { loadHeadset(HEADSET_2); }
+	function loadHeadset3() { loadHeadset(HEADSET_3); }
+	function loadHeadset4() { loadHeadset(HEADSET_4); }
+	
+	function refreshHeadsetDisplay(headset) {
+		$("#headsets ." + headset.headsetId + " .player-id").text(headset.playerId);
+		$("#headsets ." + headset.headsetId + " .measurement-type").text(headset.measurementType);
+		$("#headsets ." + headset.headsetId + " .fan-id").text(headset.fanId);
+	}
+	
+	function submitAssignHeadsetForm() {
+		var playerId = $("#assignHeadset .playerId").val();
+		var headsetId = $("#assignHeadset .headsetId option:selected" ).val();
+		var measurementType = $("#assignHeadset .measurementType option:selected").val();
+		var fanId = $("#assignHeadset .fanId option:selected").val();
+		if(fanId == 'none') fanId = null;
+		assignHeadsetByAttributes(playerId, headsetId, measurementType, fanId);
+	}
+	
+	function assignHeadsetByAttributes(id, headsetId, measurementType, fanId) {
+		var data = {
+			playerId: id,
+			headsetId: headsetId,
+			measurementType: measurementType,
+			fanId: fanId
+		};
+		assignHeadset(data);
+	}
+	
+	function assignHeadset(headset) {
+		sendRestMessage("/api/player", "PUT", headset).then(function() {
+			log("Assigned headset: ID " + headset.headsetId + "; Player ID " + headset.playerId + "; Measurement " + headset.measurementType + "; Fan ID " + headset.fanId);
+		});
 	}
 	
 	function sendRestMessage(url, requestType, data, callback) {
-		$.ajax({
+		return $.ajax({
 		  url: url,
 		  method: requestType,
-		  data: data
+		  data: JSON.stringify(data),
+		  headers: { 'Content-Type': 'application/json'}
 		})
 		.done(function( response ) {
 			if(response.errors) {

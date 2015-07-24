@@ -1,9 +1,7 @@
 
 package com.omni.fansoffury.service;
 
-import org.springframework.stereotype.Service;
-
-import com.omni.fansoffury.model.Player;
+import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.message.DeviceControllerMessage;
 
 /**
@@ -17,6 +15,6 @@ public interface FanControllerService {
 	
 	public void sendMessageToAll(DeviceControllerMessage message);
 	
-	public void changeFanSpeed(Player player, Integer percentage);
+	public void changeFanSpeed(Headset headset, Integer percentage);
 	
 }
