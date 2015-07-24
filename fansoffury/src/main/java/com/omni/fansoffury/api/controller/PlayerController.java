@@ -94,7 +94,14 @@ public class PlayerController {
 			Headset headset = headsetService.getHeadset(jsonHeadset.getHeadsetId());
 			if(null == headset) throw new IllegalArgumentException("Headset '" + jsonHeadset.getHeadsetId() + "' doesn't exist!");
 			
+			Boolean createNewSession = Boolean.FALSE;
 			Player player = playerService.getPlayer(jsonHeadset.getPlayerId());
+			if(null == headset.getPlayer()) {
+				createNewSession = Boolean.TRUE;
+			} else if(!headset.getPlayer().getId().equals(player.getId())) {
+				playerService.endPlayerSession(headset);
+				createNewSession = Boolean.TRUE;
+			}
 
 			// Map the specified headset to this player
 			headsetService.changeHeadsetPlayer(headset, player);
@@ -109,13 +116,9 @@ public class PlayerController {
 				// Otherwise the player is being disassociated from its current device
 				headsetService.changeHeadsetDevice(headset, null);
 			}
-
-			// make sure to end any active sessions for the headset
-			playerService.endPlayerSession(headset);
-
-			// start a new session for the player
-			playerService.startPlayerSession(player,headset, jsonHeadset.getMeasurementType(), device);
 			
+			if(createNewSession) playerService.startPlayerSession(headset);
+
 			response.setObject(player);
 		} catch(Exception e) {
 			response.setStatus("error");

@@ -1,6 +1,8 @@
 package com.omni.fansoffury.model.device;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Parent class for connected devices
  * @author steve.perkins
@@ -9,6 +11,7 @@ import java.io.Serializable;
 public class Device implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id;
+	@JsonIgnore
 	private transient DeviceController deviceController;
 	private String type;
 	private Double minInputValue;

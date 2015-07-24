@@ -4,141 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Score</title>
   <link rel="stylesheet" href="css/pure.min.css"/>
-  <!--
-  <link rel="stylesheet" href="css/pure-grids-responsive.min.css"/>
--->
-	<style type="text/css">
-    body {
-      /* background: url('img/binding_dark.png'); */
-      background-image: url('img/batthern.png');
-      color: black;
-    }
-
-    .border.top {
-      background-color: black;
-      height: 0px;
-    }
-
-    .border.bottom {
-      background-color: black;
-      height: 0px;
-    }
-
-    .playing-container .middle {
-      text-align: center;
-      padding-top: 2%;*/
-      /*margin-top:2px;*/
-      background-color: white;
-      background-image: url('img/gplay.png');
-      color: black;
-
-      -webkit-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
-      -moz-box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
-      box-shadow: 0px 0px 20px 6px rgba(192,192,192,1);
-    }
-
-    .playing-container {
-      height: 65%;
-    }
-
-    .separator-container {
-      text-align: center;
-      margin-top:40px;
-    }
-
-    .ondeck-container {
-      height: 30%;
-      text-align: center;
-    }
-
-    .label {
-      margin-top: 20%;
-    }
-
-    .headset, .level, .score {
-      font-size: 730%;
-      color: black;
-      -webkit-text-fill-color: #FFB700;
-      -webkit-text-stroke-width: 1px;
-      -webkit-text-stroke-color: #E0A100;
-    }
-
-    .label.headset, .label.level, .label.score {
-      font-size: 350%;
-      color: black;
-      -webkit-text-fill-color: black;
-      -webkit-text-stroke-color: #525252;
-    }
-
-    .playing-container .play-time {
-      font-size: 200%;
-    }
-
-    .playing-container .left .play-time {
-      text-align: right;
-      margin-right: 20px;
-    }
-
-    .playing-container .right .play-time {
-      text-align: left;
-      margin-left: 20px;
-    }
-
-    .playing-container .side0 {
-      text-align: right;
-    }
-    .playing-container .side1 {
-      text-align: left;
-    }
-
-    .separator-container {
-      margin-top: 187px;
-      border-top: 1px solid rgb(107, 107, 107);
-      /* border-bottom: 1px solid rgb(107, 107, 107);*/
-      background-image: url('img/on_deck_bkg.png');
-    }
-
-    /* On Deck text element */
-    .separator-container .text {
-      display: inline-block;
-      font-size: 230%;
-      font-weight: bold;
-      color: black;
-      -webkit-text-fill-color: black;
-      -webkit-text-stroke-width: 1px;
-      -webkit-text-stroke-color: ##FF9D2E;
-    }
-
-    .ondeck-container .middle img {
-      margin-top: 40px;
-    }
-
-    .ondeck-container {
-      background: url('img/binding_dark.png');
-      /*background-image: url('img/batthern.png');*/
-    }
-
-    .ondeck-container h1 {
-      color: white;
-    }
-
-    #side0-graph, #side1-graph, #ondeck1-graph, #ondeck2-graph {
-      width:600px;
-      height:400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #ondeck1-graph, #ondeck2-graph {
-        height: 295px;
-        width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        border: 2px solid gray;
-    }
-
-
-	</style>
+  <link rel="stylesheet" href="css/fof.css"/>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
@@ -211,7 +77,7 @@
         Headset 3
       </h1>
       <div class="pure-u-1">
-        <canvas id="ondeck1-graph"></canvas>
+        <canvas id="ondeck1-graph" height="295" width="600"></canvas>
       </div>
     </div>
   </div>
@@ -224,7 +90,7 @@
         Headset 4
       </h1>
       <div class="pure-u-1">
-        <canvas id="ondeck2-graph"></canvas>
+        <canvas id="ondeck2-graph" height="295" width="600"></canvas>
       </div>
     </div>
   </div>
@@ -270,49 +136,21 @@ var ondeck1GraphSerieses = {
   ATTENTION: new TimeSeries(),
   MEDITATION: new TimeSeries()
 };
-var ondeck1Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1},maxValue:100,minValue:0});
+var ondeck1Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1,fontSize:16},maxValue:100,minValue:0});
 ondeck1Graph.streamTo(document.getElementById("ondeck1-graph"), 500);
 ondeck1Graph.addTimeSeries(ondeck1GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
 ondeck1Graph.addTimeSeries(ondeck1GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
 ondeck1Graph.headsetId = null;
 
-// var ondeckContainerTextColor = "white";
-// new JustGage({
-//   id: "ondeck1-graph",
-//   value: 0,
-//   min: 0,
-//   max: 100,
-//   title: "Headset 3",
-//   titleFontColor: ondeckContainerTextColor,
-//   valueFontColor: ondeckContainerTextColor,
-//   gaugeColor: ondeckContainerTextColor,
-//   /*gaugeColor: "#000000",*/
-//   labelFontColor: ondeckContainerTextColor
-// });
-// ondeck1Graph.deviceId = null;
-
-var ondeck1GraphSerieses = {
+var ondeck2GraphSerieses = {
   ATTENTION: new TimeSeries(),
   MEDITATION: new TimeSeries()
 };
-var ondeck2Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1},maxValue:100,minValue:0});
+var ondeck2Graph = new SmoothieChart({millisPerPixel:35,grid:{fillStyle:'#ffffff',strokeStyle:'rgba(119,119,119,0.12)',sharpLines:true,verticalSections:9},labels:{fillStyle:'#4f0000',precision:1,fontSize:16},maxValue:100,minValue:0});
 ondeck2Graph.streamTo(document.getElementById("ondeck2-graph"), 500);
 ondeck2Graph.addTimeSeries(ondeck1GraphSerieses.ATTENTION, {lineWidth:2,strokeStyle:'#d90000',fillStyle:'rgba(255,140,140,0.30)'});
 ondeck2Graph.addTimeSeries(ondeck1GraphSerieses.MEDITATION, {lineWidth:2,strokeStyle:'#004fd2',fillStyle:'rgba(66,184,255,0.30)'});
 ondeck2Graph.headsetId = null;
-
-// var ondeck2Graph = new JustGage({
-//   id: "ondeck2-graph",
-//   value: 94,
-//   min: 0,
-//   max: 100,
-//   title: "Headset 4",
-//   titleFontColor: ondeckContainerTextColor,
-//   valueFontColor: ondeckContainerTextColor,
-//   gaugeColor: ondeckContainerTextColor,
-//   labelFontColor: ondeckContainerTextColor
-// });
-// ondeck2Graph.deviceId = null;
 
 /* Maps headset IDs to player/fan data and graphs */
 var HEADSETS = {

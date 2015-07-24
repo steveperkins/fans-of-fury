@@ -15,6 +15,7 @@ import com.omni.fansoffury.headset.listener.FanControlMindwaveEventListener;
 import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.Player;
 import com.omni.fansoffury.model.device.Device;
+import com.omni.fansoffury.player.PlayerService;
 import com.sperkins.mindwave.event.MindwaveEventListener;
 
 @Service
@@ -26,6 +27,9 @@ public class HeadsetServiceImpl implements HeadsetService {
 	
 	@Autowired
 	private BluetoothSocketService bluetoothSocketService;
+	
+	@Autowired
+	private PlayerService playerService;
 	
 	// TODO Load headsets from data store
 	private Map<String, Headset> headsets = new HashMap<String, Headset>();
@@ -46,6 +50,7 @@ public class HeadsetServiceImpl implements HeadsetService {
 	
 	@Override
 	public void changeHeadsetPlayer(Headset headset, Player player) {
+		// make sure to end any active sessions for the headset
 		headset.setPlayer(player);
 		headset.setDevice(null);
 		
@@ -65,6 +70,7 @@ public class HeadsetServiceImpl implements HeadsetService {
 	public void changeHeadsetDevice(Headset headset, Device device) {
 		// Remove this device from any other players assigned to it
 		if(null != device) {
+			// This headset is being assigned a new device
 			for(Headset h: headsets.values()) {
 				if(null != h.getDevice() && h.getDevice().getId().equals(device.getId())) {
 					h.setDevice(null);

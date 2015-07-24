@@ -2,14 +2,17 @@ package com.omni.fansoffury.player;
 
 
 import com.omni.fansoffury.headset.service.BluetoothSocketService;
+import com.omni.fansoffury.level.LevelingStrategy;
 import com.omni.fansoffury.model.event.ScoreChangedEvent;
 import com.sperkins.mindwave.event.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 
 import javax.annotation.PostConstruct;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
@@ -21,6 +24,9 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 
 	@Autowired
 	private ScoreService scoreService;
+	
+	@Autowired
+	private LevelingStrategy levelingStrategy;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -31,13 +37,12 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 		final Integer value;
 
 		if (EventType.ATTENTION.equals(event.getEventType())) {
-			AttentionEvent attEvent = (AttentionEvent) event;
-			value = attEvent.getValue();
+			value = ((AttentionEvent) event).getValue();
 		} else if(EventType.MEDITATION.equals(event.getEventType())) {
-			MeditationEvent medEvent = (MeditationEvent) event;
-			value = medEvent.getValue();
+			value = ((MeditationEvent) event).getValue();
 		} else {
 			// todo figure out if we can store the other types of measures
+			// This would be a good spot to store raw EEG values
 			return;
 		}
 

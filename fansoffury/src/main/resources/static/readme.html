@@ -69,10 +69,9 @@ h4 {
 	<p>On startup, the fan controller uses the bidirectional nature of websockets to register itself and its two distinct fans with the server. Clients can then configure games/players/headsets and listen to score and EEG changes.</p>
 	<p>The quadcopter motors are controlled by an Electronic Speed Controller, which varies the motor voltage on receiving PWM (Pulse Width Modulation) signals.
 <p>The Pi listens to an event stream from the server, parses the events, and sends appropriate PWM signals to the ESCs.</p>
-</div>
+
 
 <h2>Interfaces</h2>
-<div>
 	<h3>REST</h3>
 	<div>
 		<p>All REST endpoints return JSON objects. All JSON objects are analogous to the com.omni.fansoffury.model.json.JsonResponse Java type.</p>
@@ -97,28 +96,25 @@ h4 {
 		<h4>GET /api/player/{STR playerId}</h4>
 		<div>
 			Retrieves the player with the ID {playerId}.
+			<div class="code">
+				{"status":"success","message":null,"errors":null,"object":{"id":"0","attentionLevel":0.0,"meditationLevel":0.0,"headsetId":null,"measurementType":"ATTENTION","score":0},"error":false}
+			</div>
 		</div>
 
-		<h4>PUT /api/player/{STR playerId}</h4>
+		<h4>PUT /api/player</h4>
 		<div>
-			Creates a player with the ID {playerId}.
-		</div>
-
-		<h4>PUT /api/player/map/{STR playerId}/headset/{STR headsetId}/measurement/{STR measurementType: ATTENTION | MEDITATION}</h4>
-		<div>
-			Maps the player identified by {playerId} to the headset identified by {headsetId}. The player's measurement type is also set to {measurementType}.
-			<p>The player must exist before this endpoint is invoked.</p>
-		</div>
-
-		<h4>PUT /api/player/map/{playerId}/device/{STR deviceId}</h4>
-		<div>
-			Maps the player identified by {playerId} to the device identified by {deviceId}. A device ID identifies a fan.
-			<p>The player must exist before this endpoint is invoked.</p>
+			Assigns the player with ID {playerId} to a headset and possibly a fan based on the JSON in the request body. If the fanId property is null or omitted, the player is assigned to the specified headset but not a fan. If the player was already assigned to a fan, they are unassigned and their 'session' ended.
+			<div class="code">
+				{playerId: "0", headsetId: "74E543D575B0", measurementType: "ATTENTION", fanId: "0"}
+			</div>
 		</div>
 
 		<h4>GET /api/devices</h4>
 		<div>
 			Retrieves the list of currently-registered devices.
+			<div class="code">
+				{"status":"success","message":null,"errors":null,"object":[{"id":"0","type":"fan","minInputValue":9.0,"maxInputValue":15.0,"deviceController":null},{"id":"1","type":"fan","minInputValue":9.0,"maxInputValue":15.0,"deviceController":null}],"error":false}
+			</div>
 		</div>
 	</div>
 	<h3>Websockets</h3>

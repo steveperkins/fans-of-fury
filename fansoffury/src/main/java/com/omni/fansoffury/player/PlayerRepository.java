@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.Player;
-import com.omni.fansoffury.model.device.Device;
 import com.sperkins.mindwave.event.EventType;
 
 @Repository
@@ -77,20 +76,20 @@ public class PlayerRepository {
 		}
 	}
 
-	public void startPlayerSession(final Headset headset, final EventType eventType, final Player player, final Device fan) {
-		if (!(eventType.equals(EventType.ATTENTION) || eventType.equals(EventType.MEDITATION))) {
-			throw new IllegalArgumentException("player must play with either meditation or attention.  Got: " + eventType);
+	public void startPlayerSession(final Headset headset) {
+		if (!(headset.getPlayer().getMeasurementType().equals(EventType.ATTENTION) || headset.getPlayer().getMeasurementType().equals(EventType.MEDITATION))) {
+			throw new IllegalArgumentException("player must play with either meditation or attention.  Got: " + headset.getPlayer().getMeasurementType());
 		}
 		jdbc.execute("INSERT INTO player_session (qr_code, start_datetime, headset, fan, measurement_type) " +
 				"VALUES(?,?,?,?,?)", new PreparedStatementCallback<Boolean>() {
 
 			@Override
 			public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-				ps.setString(1, player.getId());
+				ps.setString(1, headset.getPlayer().getId());
 				ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
 				ps.setString(3, headset.getId());
-				ps.setString(4, (fan == null) ? null : fan.getId());
-				ps.setString(5, eventType.toString());
+				ps.setString(4, (headset.getDevice() == null) ? null : headset.getDevice().getId());
+				ps.setString(5, headset.getPlayer().getMeasurementType().toString());
 				return ps.execute();
 			}
 		});
