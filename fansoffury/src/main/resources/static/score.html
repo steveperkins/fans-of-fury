@@ -17,6 +17,9 @@
       <div class="pure-u-1">
         <div id="side0-graph"></div>
         <div class="side0 play-time">00:00</div>
+        <div id="side0-face">
+        	<img class='face'  />
+        </div>
       </div>
     </div>
   </div>
@@ -66,6 +69,9 @@
       <div class="pure-u-1">
         <div id="side1-graph"></div>
         <div class="side1 play-time">00:00</div>
+        <div id="side1-face">
+        	<img class='face'  />
+        </div>
       </div>
     </div>
   </div>
@@ -262,7 +268,10 @@ function eegChanged(eegChangedEvent) {
   headset.measurementType = eegChangedEvent.headset.player.measurementType;
   if(!playerHasLeft && isPlayingGraph(headset.graph) && headset.measurementType == eegChangedEvent.eventType) {
     // Update graph
-    headset.graph.refresh(eegChangedEvent.value);
+    headset.graph.refresh(eegChangedEvent.value);    
+    faceSelector = '#side' + headset.deviceId + '-face img';
+    faceImg = '/img/face' + (Math.floor(eegChangedEvent.value / 20) * 20) + '.png';
+    $(faceSelector).attr('src', faceImg);
     console.log("Displaying " + eegChangedEvent.eventType + " value " + eegChangedEvent.value + " for headset " + headset.number);
     displayPlayerData(headset);
   }
