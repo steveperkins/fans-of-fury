@@ -109,7 +109,7 @@ public class HeadsetServiceImpl implements HeadsetService {
 		headsets.put(headset.getId(), headset);
 		
 		// Headset 4
-		headset = new Headset("11111");
+		headset = new Headset("20689D79DE8A");
 		headsets.put(headset.getId(), headset);
 	}
 	
