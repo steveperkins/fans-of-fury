@@ -136,3 +136,9 @@ body {
         margin-right: auto;
         border: 2px solid gray;
     }
+    
+    .face {
+    	display:block;
+    	margin: 0 auto -120px;
+    	width: 96px;
+    }

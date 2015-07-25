@@ -26,5 +26,7 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public void endPlayerSession(Headset headset) {
 		playerRepository.endPlayerSession(headset);
+		headset.setDevice(null);
+		headset.setPlayer(null);
 	}
 }

@@ -2,10 +2,13 @@ package com.omni.fansoffury.player;
 
 
 import com.omni.fansoffury.headset.service.BluetoothSocketService;
+import com.omni.fansoffury.headset.service.HeadsetService;
 import com.omni.fansoffury.level.LevelingStrategy;
 import com.omni.fansoffury.model.event.ScoreChangedEvent;
 import com.sperkins.mindwave.event.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,9 +20,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 
 public class DataLogger implements ScoreListener, MindwaveEventListener {
-
+	private static Logger logger = LoggerFactory.getLogger(DataLogger.class);
+	
 	@Autowired
 	private BluetoothSocketService bluetoothSocketService;
 
@@ -27,16 +32,32 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 	private ScoreService scoreService;
 	
 	@Autowired
+	private PlayerService playerService;
+	
+	@Autowired
+	private HeadsetService headSetService;
+	
+	@Autowired
 	private LevelingStrategy levelingStrategy;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	private HashMap<String, Integer> timeoutCounters;
 
+	public DataLogger() {
+		super();
+		timeoutCounters = new HashMap<String, Integer>();
+	}
 
 	@Override
 	public void onEvent(final Event event) {
 		final Integer value;
 
+		String key = event.getDeviceAddress();
+		if (!timeoutCounters.containsKey(key)) {
+			timeoutCounters.put(key, 0);
+		}
 		if (EventType.ATTENTION.equals(event.getEventType())) {
 			value = ((AttentionEvent) event).getValue();
 		} else if(EventType.MEDITATION.equals(event.getEventType())) {
@@ -47,6 +68,24 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 			return;
 		}
 
+		
+		
+		if (value == 0) {
+			if (headSetService.getHeadset(key) != null && headSetService.getHeadset(key).getPlayer() != null) {
+				logger.debug("Headset ({}) idle for: {} cycles", key, timeoutCounters.get(key)/2);
+				timeoutCounters.put(key, timeoutCounters.get(key)+1);
+				
+				//If the player has been inactive for ~60 seconds, end their session.
+				if (timeoutCounters.get(key) >= 120) {
+					logger.debug("TIMEOUT for {}", key);
+					playerService.endPlayerSession(headSetService.getHeadset(key));
+					logger.debug("Player session ended for {}", key);
+					timeoutCounters.remove(key);
+				}
+			}
+		} else if (value > 0) {
+			timeoutCounters.put(key, 0);
+		}
 		jdbcTemplate.execute("INSERT INTO measurement(session_id, measure_type, measure_datetime, value) " +
 						"SELECT id, ?, ?, ? FROM player_session WHERE headset = ? AND end_datetime IS NULL",
 				new PreparedStatementCallback<Boolean>() {
