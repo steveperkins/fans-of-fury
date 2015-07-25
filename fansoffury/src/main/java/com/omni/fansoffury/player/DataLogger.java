@@ -71,20 +71,20 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 		
 		
 		if (value == 0) {
-			logger.debug("Headset ({}) idle for: {} cycles", key, timeoutCounters.get(key)/2);
-			timeoutCounters.put(key, timeoutCounters.get(key)+1);
+			if (headSetService.getHeadset(key) != null && headSetService.getHeadset(key).getPlayer() != null) {
+				logger.debug("Headset ({}) idle for: {} cycles", key, timeoutCounters.get(key)/2);
+				timeoutCounters.put(key, timeoutCounters.get(key)+1);
+				
+				//If the player has been inactive for ~60 seconds, end their session.
+				if (timeoutCounters.get(key) >= 20) {
+					logger.debug("TIMEOUT for {}", key);
+					playerService.endPlayerSession(headSetService.getHeadset(key));
+					logger.debug("Player session ended for {}", key);
+					timeoutCounters.remove(key);
+				}
+			}
 		} else if (value > 0) {
 			timeoutCounters.put(key, 0);
-		}
-		
-		//If the player has been inactive for ~60 seconds, end their session.
-		if (timeoutCounters.get(key) >= 120) {
-			logger.debug("TIMEOUT for {}", key);
-			if (headSetService.getHeadset(key) != null) {
-				playerService.endPlayerSession(headSetService.getHeadset(key));
-				logger.debug("Player session ended for {}", key);
-			}
-			timeoutCounters.remove(key);
 		}
 		jdbcTemplate.execute("INSERT INTO measurement(session_id, measure_type, measure_datetime, value) " +
 						"SELECT id, ?, ?, ? FROM player_session WHERE headset = ? AND end_datetime IS NULL",
