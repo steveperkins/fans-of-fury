@@ -2,6 +2,7 @@
 using UIKit;
 using System.Collections.Generic;
 using System.Linq;
+using fansoffury.mobile.domain;
 
 namespace fansoffury.mobile
 {
@@ -10,9 +11,9 @@ namespace fansoffury.mobile
 		const string CellIdentifier = "HeadsetTableCell";
 
 		PlayerViewController _controller;
-		private int _selectedHeadsetId;
+		private int? _selectedHeadsetId;
 
-		public HeaderTableViewSource (IEnumerable<Headset> items, int selectedHeadset, PlayerViewController controller)
+		public HeaderTableViewSource (IEnumerable<Headset> items, int? selectedHeadset, PlayerViewController controller)
 		{
 			Headsets = items.ToList();
 			_selectedHeadsetId = selectedHeadset;

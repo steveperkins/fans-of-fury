@@ -2,6 +2,7 @@
 using UIKit;
 using System.Collections.Generic;
 using System.Linq;
+using fansoffury.mobile.domain;
 
 namespace fansoffury.mobile
 {

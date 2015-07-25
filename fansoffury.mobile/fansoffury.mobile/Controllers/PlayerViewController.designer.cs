@@ -16,11 +16,23 @@ namespace fansoffury.mobile
 	{
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UIButton AddToGameButton { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UISegmentedControl FanTeam { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UITextField HeadsetId { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UITableViewCell HeadsetIdTableCell { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UISegmentedControl HeadsetType { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
@@ -34,8 +46,20 @@ namespace fansoffury.mobile
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UITextField PlayerName { get; set; }
 
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UIButton RemoveFromGameButton { get; set; }
+
 		void ReleaseDesignerOutlets ()
 		{
+			if (AddToGameButton != null) {
+				AddToGameButton.Dispose ();
+				AddToGameButton = null;
+			}
+			if (FanTeam != null) {
+				FanTeam.Dispose ();
+				FanTeam = null;
+			}
 			if (HeadsetId != null) {
 				HeadsetId.Dispose ();
 				HeadsetId = null;
@@ -43,6 +67,10 @@ namespace fansoffury.mobile
 			if (HeadsetIdTableCell != null) {
 				HeadsetIdTableCell.Dispose ();
 				HeadsetIdTableCell = null;
+			}
+			if (HeadsetType != null) {
+				HeadsetType.Dispose ();
+				HeadsetType = null;
 			}
 			if (PlayerId != null) {
 				PlayerId.Dispose ();
@@ -55,6 +83,10 @@ namespace fansoffury.mobile
 			if (PlayerName != null) {
 				PlayerName.Dispose ();
 				PlayerName = null;
+			}
+			if (RemoveFromGameButton != null) {
+				RemoveFromGameButton.Dispose ();
+				RemoveFromGameButton = null;
 			}
 		}
 	}

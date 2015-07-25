@@ -5,6 +5,10 @@ using Foundation;
 using UIKit;
 using System.Collections.Generic;
 using System.Linq;
+using fansoffury.mobile.domain;
+using fansoffury.mobile.services;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace fansoffury.mobile
 {
@@ -13,6 +17,7 @@ namespace fansoffury.mobile
 		private Player _player;
 		private PlayerListViewController _playerListViewController;
 		private bool _newPlayer;
+		private IPlayerService _playerService;
 
 		public PlayerViewController (IntPtr handle) : base (handle)
 		{
@@ -21,6 +26,7 @@ namespace fansoffury.mobile
 				new Headset () { HeadsetId = 1, HeadsetName = "Headset 1" },
 				new Headset () { HeadsetId = 2, HeadsetName = "Headset 2" }
 			};
+			_playerService = new PlayerService ();
 		}
 
 		public List<Headset> Headsets { get; set; }
@@ -31,6 +37,7 @@ namespace fansoffury.mobile
 			_player = player;
 			if (_player == null) {
 				PlayerIdCell.AddGestureRecognizer (new UITapGestureRecognizer (AddPlayerGestureHandler));
+
 			} else {
 				AddHeadsetGesture ();
 			}
@@ -39,8 +46,16 @@ namespace fansoffury.mobile
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+			AddToGameButton.Hidden = true;
+			RemoveFromGameButton.Hidden = true;
 			KeyboardUtil.RegisterKeyboardDismissalHandler (this.View);
 			KeyboardUtil.RegisterKeyboardDoneHandler (this.PlayerName);
+			AddToGameButton.TouchUpInside+= (sender, e) => {
+				ChangeGameState(true);
+			};
+			RemoveFromGameButton.TouchUpInside+= (sender, e) =>  {
+				ChangeGameState(false);
+			};
 			AddSaveButton ();
 		}
 
@@ -60,10 +75,12 @@ namespace fansoffury.mobile
 
 		#region Private Methods
 
-		private void SetPlayerName()
+		private void SetPlayerInfo()
 		{
 			if (_player != null){
 				_player.Name = PlayerName.Text;
+				_player.MeasurementType = HeadsetType.SelectedSegment == 0 ? MeasurementTypeEnum.Attention.ToString ().ToUpper () : MeasurementTypeEnum.Meditation.ToString ().ToUpper ();
+				_player.FanValue = FanTeam.SelectedSegment == 0 ? FanEnum.Blue : FanEnum.Red;
 			}
 		}
 
@@ -71,7 +88,7 @@ namespace fansoffury.mobile
 		{
 			HeadsetIdTableCell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
 			HeadsetIdTableCell.AddGestureRecognizer (new UITapGestureRecognizer (() => {
-				SetPlayerName();
+				SetPlayerInfo();
 				var vc = Storyboard.InstantiateViewController ("HeadsetTableSelectionController") as HeadsetTableSelectionController;
 				vc.SetDataSource (new HeaderTableViewSource (Headsets, _player.HeadsetId, this), 1);
 				NavigationController.PushViewController (vc, true);
@@ -84,6 +101,7 @@ namespace fansoffury.mobile
 				SavePlayer();
 			}), true);
 		}
+
 		private async void AddPlayerGestureHandler ()
 		{
 			Console.WriteLine ("PlayerID Pushed");
@@ -99,7 +117,8 @@ namespace fansoffury.mobile
 			}
 			Console.WriteLine ("PlayerID: " + id);
 			_newPlayer = true;
-			_player = new Player (id);
+			_player = await _playerService.GetPlayer (id);
+			//_player = new Player (id);
 			BindLabels ();
 			AddHeadsetGesture ();
 		}
@@ -112,6 +131,11 @@ namespace fansoffury.mobile
 				if (Headsets.Any (x => x.HeadsetId == _player.HeadsetId)) {
 					HeadsetId.Text = Headsets.Single (x => x.HeadsetId == _player.HeadsetId).HeadsetName;
 				}
+				HeadsetType.SelectedSegment = _player.MeasurementTypeEnum == MeasurementTypeEnum.Meditation ? 1 : 0;
+				if (_player.FanValue != FanEnum.Unknown){
+					FanTeam.SelectedSegment = (int)_player.FanValue;
+				}
+				ChangeGameState (_player.InGame);
 			}
 		}
 
@@ -129,8 +153,9 @@ namespace fansoffury.mobile
 			}
 			if (!string.IsNullOrEmpty (error)) {
 				var alert = new UIAlertView ("Error", "Invalid Player", null, "Ok", null);
+				alert.Show ();
 			} else {
-
+				SetPlayerInfo ();
 				if (_newPlayer && _player != null) {
 					_playerListViewController.AddPlayer (_player);
 				}
@@ -139,8 +164,19 @@ namespace fansoffury.mobile
 			}
 		}
 
+		private void ChangeGameState(bool inGame)
+		{
+			AddToGameButton.Hidden = inGame;
+			RemoveFromGameButton.Hidden = !inGame;
+		}
+
+		private void ChangeFanTeam(FanEnum fan)
+		{
+			
+		}
 
 		#endregion
+
 	}
 }
 

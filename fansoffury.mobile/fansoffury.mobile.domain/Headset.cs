@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace fansoffury.mobile
+namespace fansoffury.mobile.domain
 {
 	public class Headset
 	{

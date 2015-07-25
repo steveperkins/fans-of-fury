@@ -23,7 +23,7 @@ namespace fansoffury.mobile
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			NavigationItem.SetRightBarButtonItem (new UIBarButtonItem ("Save", UIBarButtonItemStyle.Plain, (o, e) => {
+			NavigationItem.SetRightBarButtonItem (new UIBarButtonItem ("Assign", UIBarButtonItemStyle.Plain, (o, e) => {
 				NavigationController.PopViewController(true);
 			}), true);
 
