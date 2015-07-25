@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class DataLogger implements ScoreListener, MindwaveEventListener {
@@ -79,7 +80,11 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 
 	@PostConstruct
 	private void postConstruct() {
+		// end all session that were left open.
+		jdbcTemplate.update("UPDATE player_session set end_datetime = ? where end_datetime is null", new Timestamp(new Date().getTime()));
+
 		bluetoothSocketService.addListener(this);
 		scoreService.addListener(this);
+
 	}
 }

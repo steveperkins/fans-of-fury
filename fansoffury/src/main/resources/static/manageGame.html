@@ -191,8 +191,7 @@
 		fanControllerWs = new SockJS(target);
 		fanControllerWs.onopen = function () {
 			log('Info: /ws/fancontroller WebSocket connection opened.');
-			fanControllerListenerConnected(true);
-			
+
 			// Tell the fan controller we are a device controller with two fans, IDs "0" and "1", so players can be mapped to them
 			// This object is analogous to the DeviceControllerRegistrationEvent Java object
 			var event = {
@@ -218,6 +217,8 @@
 			fanControllerConnected = true;
 		};
 		fanControllerWs.onmessage = function (event) {
+			// once the first message is recieved on the socket, then signal that the devices have been registered
+			fanControllerListenerConnected(true);
 			log('/ws/fancontroller Received: ' + event.data);
 		};
 		fanControllerWs.onclose = function () {

@@ -96,6 +96,11 @@ public class PlayerController {
 			
 			Boolean createNewSession = Boolean.FALSE;
 			Player player = playerService.getPlayer(jsonHeadset.getPlayerId());
+			player.setMeasurementType(jsonHeadset.getMeasurementType());
+
+			// TODO what is the desired logic for when a player is moved from on-deck (no fan) to paying the game (conected fan)
+			// should a new player session be created?  Right now the fan for a player in this case will not be recorded
+			// and the start time will be from when they were on deck
 			if(null == headset.getPlayer()) {
 				createNewSession = Boolean.TRUE;
 			} else if(!headset.getPlayer().getId().equals(player.getId())) {

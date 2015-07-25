@@ -13,7 +13,7 @@ import com.sperkins.mindwave.event.EventType;
 @Component
 public class ScoreLevelingStrategy implements LevelingStrategy {
 
-	private static final Double LEVEL_INCREMENT = 0.2;
+	public static final Double LEVEL_INCREMENT = 0.2;
 	@Override
 	public void scoreChanged(Player player) {
 		if(EventType.ATTENTION.equals(player.getMeasurementType())) {

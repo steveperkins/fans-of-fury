@@ -3,16 +3,19 @@ package com.omni.fansoffury.player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import com.omni.fansoffury.level.ScoreLevelingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +23,9 @@ import com.omni.fansoffury.model.Headset;
 import com.omni.fansoffury.model.Player;
 import com.sperkins.mindwave.event.EventType;
 
+/**
+ * Repository for players and player sessions.
+ */
 @Repository
 public class PlayerRepository {
 	@Autowired
@@ -38,6 +44,7 @@ public class PlayerRepository {
 	};
 
 
+
 	public Player findOrCreateByQRCode(final String qrCode) {
 		// figure out a better way of sharing active players
 		synchronized (playerCache) {
@@ -49,10 +56,34 @@ public class PlayerRepository {
 
 			List<Player> players = jdbc.query("SELECT p.qr_code FROM player p WHERE p.qr_code = ?", playerMapper, qrCode);
 			if (players.size() > 0) {
-				Player player = players.get(0);
-				// todo initialize the player's lastest level from database
+				final Player player = players.get(0);
+				// Defaults levels
 				player.setAttentionLevel(0.0);
 				player.setMeditationLevel(0.0);
+
+				jdbc.query(
+						"SELECT measurement_type, count(1) as lifetime_points " +
+						"FROM " +
+						"player_session ps " +
+						"INNER JOIN score s ON s.session_id = ps.id " +
+						"WHERE ps.qr_code = ? " +
+						"GROUP BY measurement_type", new ResultSetExtractor<Player>() {
+					@Override
+					public Player extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+						while (resultSet.next()) {
+							EventType eventType = EventType.valueOf(resultSet.getString("measurement_type"));
+							double level = ScoreLevelingStrategy.LEVEL_INCREMENT * resultSet.getInt("lifetime_points");
+							if (eventType.equals(EventType.ATTENTION)) {
+								player.setAttentionLevel(level);
+							} else if (eventType.equals(EventType.MEDITATION)) {
+								player.setMeditationLevel(level);
+							}
+						}
+						return player;
+					}
+				},
+				player.getId());
+
 
 				// Assume that when a new player is retrieved from the DB that a new session is starting
 				player.setScore(0);
@@ -73,6 +104,7 @@ public class PlayerRepository {
 				playerCache.add(player);
 				return player;
 			}
+
 		}
 	}
 
@@ -96,7 +128,7 @@ public class PlayerRepository {
 	}
 
 	public void endPlayerSession(final Headset headset) {
-		jdbc.execute("update player_session set end_datetime = ? where headset=? and end_datetime is null",
+		jdbc.execute("UPDATE player_session SET end_datetime = ? WHERE headset=? AND end_datetime IS NULL",
 				new PreparedStatementCallback<Boolean>() {
 					@Override
 					public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
