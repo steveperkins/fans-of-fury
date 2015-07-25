@@ -76,7 +76,7 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 				timeoutCounters.put(key, timeoutCounters.get(key)+1);
 				
 				//If the player has been inactive for ~60 seconds, end their session.
-				if (timeoutCounters.get(key) >= 20) {
+				if (timeoutCounters.get(key) >= 120) {
 					logger.debug("TIMEOUT for {}", key);
 					playerService.endPlayerSession(headSetService.getHeadset(key));
 					logger.debug("Player session ended for {}", key);
