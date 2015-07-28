@@ -12,12 +12,9 @@ namespace fansoffury.mobile
 			View.LayoutMargins = new UIEdgeInsets (20, 0, 0, 0);
 		}
 
-		public void SetDataSource(HeaderTableViewSource dataSource, int selectedHeadsetId)
+		public void SetDataSource(HeaderTableViewSource dataSource)
 		{
 			TableView.Source = dataSource;
-			foreach (var item in dataSource.Headsets) {
-				
-			}
 		}
 
 		public override void ViewDidLoad ()

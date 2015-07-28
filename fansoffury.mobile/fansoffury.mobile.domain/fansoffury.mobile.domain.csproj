@@ -45,6 +45,8 @@
     <Compile Include="JsonResponse.cs" />
     <Compile Include="MeasurementType.cs" />
     <Compile Include="Fan.cs" />
+    <Compile Include="JsonHeadset.cs" />
+    <Compile Include="AppSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

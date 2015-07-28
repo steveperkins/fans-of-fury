@@ -18,15 +18,14 @@ namespace fansoffury.mobile
 		private PlayerListViewController _playerListViewController;
 		private bool _newPlayer;
 		private IPlayerService _playerService;
+		private IHeadsetService _headsetService;
 
 		public PlayerViewController (IntPtr handle) : base (handle)
 		{
 			View.LayoutMargins = new UIEdgeInsets (20, 0, 0, 0);
-			Headsets = new List<Headset> () {
-				new Headset () { HeadsetId = 1, HeadsetName = "Headset 1" },
-				new Headset () { HeadsetId = 2, HeadsetName = "Headset 2" }
-			};
 			_playerService = new PlayerService ();
+			_headsetService = new HeadsetService ();
+			Headsets = _headsetService.GetHeadsets ();
 		}
 
 		public List<Headset> Headsets { get; set; }
@@ -65,7 +64,7 @@ namespace fansoffury.mobile
 			BindLabels ();
 		}
 
-		public void SelectHeadset (int headsetId)
+		public void SelectHeadset (string headsetId)
 		{
 			if (_player != null) {
 				_player.HeadsetId = headsetId;
@@ -79,8 +78,21 @@ namespace fansoffury.mobile
 		{
 			if (_player != null){
 				_player.Name = PlayerName.Text;
-				_player.MeasurementType = HeadsetType.SelectedSegment == 0 ? MeasurementTypeEnum.Attention.ToString ().ToUpper () : MeasurementTypeEnum.Meditation.ToString ().ToUpper ();
-				_player.FanValue = FanTeam.SelectedSegment == 0 ? FanEnum.Blue : FanEnum.Red;
+				_player.MeasurementTypeValue = HeadsetType.SelectedSegment == 0 ? MeasurementTypeEnum.Attention : MeasurementTypeEnum.Meditation;
+
+				switch (FanTeam.SelectedSegment) {
+				case 0:
+					_player.FanValue = FanEnum.Blue;
+					break;
+				case 1:
+					_player.FanValue = FanEnum.Red;
+					break;
+				default:
+					_player.FanValue = FanEnum.Unknown;
+					break;
+				}
+
+				_player.InGame = InGameToggle.On;
 			}
 		}
 
@@ -90,7 +102,7 @@ namespace fansoffury.mobile
 			HeadsetIdTableCell.AddGestureRecognizer (new UITapGestureRecognizer (() => {
 				SetPlayerInfo();
 				var vc = Storyboard.InstantiateViewController ("HeadsetTableSelectionController") as HeadsetTableSelectionController;
-				vc.SetDataSource (new HeaderTableViewSource (Headsets, _player.HeadsetId, this), 1);
+				vc.SetDataSource (new HeaderTableViewSource (Headsets, _player.HeadsetId, this));
 				NavigationController.PushViewController (vc, true);
 			}));
 
@@ -117,8 +129,12 @@ namespace fansoffury.mobile
 			}
 			Console.WriteLine ("PlayerID: " + id);
 			_newPlayer = true;
-			_player = await _playerService.GetPlayer (id);
-			//_player = new Player (id);
+			try {
+				_player = _playerService.GetPlayer (id);
+			} catch (Exception e) {
+				var alert = new UIAlertView ("Error", "There was an error retrieving the player\n" + e.Message, null, "Ok", null);
+				alert.Show ();
+			}
 			BindLabels ();
 			AddHeadsetGesture ();
 		}
@@ -132,9 +148,8 @@ namespace fansoffury.mobile
 					HeadsetId.Text = Headsets.Single (x => x.HeadsetId == _player.HeadsetId).HeadsetName;
 				}
 				HeadsetType.SelectedSegment = _player.MeasurementTypeEnum == MeasurementTypeEnum.Meditation ? 1 : 0;
-				if (_player.FanValue != FanEnum.Unknown){
-					FanTeam.SelectedSegment = (int)_player.FanValue;
-				}
+				FanTeam.SelectedSegment = (int)_player.FanValue;
+				InGameToggle.On = _player.InGame;
 				ChangeGameState (_player.InGame);
 			}
 		}
@@ -159,6 +174,10 @@ namespace fansoffury.mobile
 				if (_newPlayer && _player != null) {
 					_playerListViewController.AddPlayer (_player);
 				}
+				if (_player != null && _player.InGame && _player.FanValue != FanEnum.Unknown && !string.IsNullOrEmpty(_player.HeadsetId)) {
+					var response = _playerService.AssignPlayer (new JsonHeadset(_player));
+					Console.WriteLine (response);
+				}
 				Console.WriteLine ("Save Player");
 				NavigationController.PopViewController (true);
 			}
@@ -168,11 +187,12 @@ namespace fansoffury.mobile
 		{
 			AddToGameButton.Hidden = inGame;
 			RemoveFromGameButton.Hidden = !inGame;
+			_player.InGame = inGame;
 		}
 
 		private void ChangeFanTeam(FanEnum fan)
 		{
-			
+			Console.WriteLine(fan);
 		}
 
 		#endregion

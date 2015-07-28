@@ -36,6 +36,10 @@ namespace fansoffury.mobile
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UISwitch InGameToggle { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UITextField PlayerId { get; set; }
 
 		[Outlet]
@@ -71,6 +75,10 @@ namespace fansoffury.mobile
 			if (HeadsetType != null) {
 				HeadsetType.Dispose ();
 				HeadsetType = null;
+			}
+			if (InGameToggle != null) {
+				InGameToggle.Dispose ();
+				InGameToggle = null;
 			}
 			if (PlayerId != null) {
 				PlayerId.Dispose ();

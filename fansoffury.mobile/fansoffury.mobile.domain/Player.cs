@@ -25,6 +25,18 @@ namespace fansoffury.mobile.domain
 
 		public string MeasurementType { get; set; }
 
+		public MeasurementTypeEnum MeasurementTypeValue {
+			get {
+				if (MeasurementType == MeasurementTypeEnum.Meditation.ToString ().ToUpper ())
+					return MeasurementTypeEnum.Meditation;
+
+				return MeasurementTypeEnum.Attention;
+			}
+			set {
+				MeasurementType = value.ToString ().ToUpper ();
+			}
+		}
+
 		public bool InGame { get; set; }
 
 		public FanEnum FanValue {
@@ -52,7 +64,6 @@ namespace fansoffury.mobile.domain
 
 		public string Fan { get; set; }
 
-
 		public MeasurementTypeEnum MeasurementTypeEnum {
 			get { 
 				MeasurementTypeEnum type = MeasurementTypeEnum.Unknown;
@@ -63,11 +74,22 @@ namespace fansoffury.mobile.domain
 			}
 		}
 
+		public string Display
+		{
+			get {
+				if (InGame && !string.IsNullOrEmpty (Fan)) {
+					return string.Format ("{0} (Team:{1})", Name, Fan);
+				}
+
+				return Name;
+			}
+		}
+
 		public int Score { get; set; }
 
 		public string Name { get; set; }
 
-		public int? HeadsetId  { get; set; }
+		public string HeadsetId  { get; set; }
 
 		public string PlayerId { 
 			get { return _playerId.Contains ('-') ? _playerId.Substring (_playerId.LastIndexOf ('-') + 1, _playerId.Length - _playerId.LastIndexOf ('-') - 1) : _playerId; }

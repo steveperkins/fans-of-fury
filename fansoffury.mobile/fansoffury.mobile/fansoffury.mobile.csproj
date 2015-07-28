@@ -133,8 +133,10 @@
     <Compile Include="TableSources\PlayerTableViewSource.cs" />
     <Compile Include="TableSources\HeadsetTableViewSource.cs" />
     <Compile Include="Utility\KeyboardUtil.cs" />
-    <Compile Include="Services\Interfaces\IPlayerService.cs" />
-    <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\SettingsController.designer.cs">
+      <DependentUpon>SettingsController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
