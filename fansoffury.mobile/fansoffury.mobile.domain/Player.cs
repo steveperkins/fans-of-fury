@@ -77,8 +77,8 @@ namespace fansoffury.mobile.domain
 		public string Display
 		{
 			get {
-				if (InGame && !string.IsNullOrEmpty (Fan)) {
-					return string.Format ("{0} (Team:{1})", Name, Fan);
+				if (InGame && FanValue != FanEnum.Unknown) {
+					return string.Format ("{0} (Team:{1})", Name, FanValue.ToString());
 				}
 
 				return Name;

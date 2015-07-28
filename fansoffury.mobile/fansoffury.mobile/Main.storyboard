@@ -161,7 +161,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Player Id:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sin-1A-yGf">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Player Id:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sin-1A-yGf">
                                                     <rect key="frame" x="8" y="13" width="100" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="ocK-Nu-nJZ"/>
@@ -191,7 +191,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                                 </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W92-dO-Obb">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W92-dO-Obb">
                                                     <rect key="frame" x="8" y="13" width="100" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="DmT-Oc-uEi"/>
@@ -216,7 +216,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XoZ-VZ-tUA" id="VgD-CO-qCd">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Headset Id:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c6r-Nr-9Nr">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Headset Id:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c6r-Nr-9Nr">
                                                     <rect key="frame" x="8" y="13" width="100" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="nT3-Wg-CPU"/>
@@ -246,7 +246,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Spw-oW-wNW" id="mt6-v7-6lG">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Type:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3tt-RJ-UUq">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Type:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3tt-RJ-UUq">
                                                     <rect key="frame" x="8" y="12.5" width="100" height="20.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="JmZ-kl-Phs"/>
@@ -323,7 +323,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="V6K-In-5xM">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="V6K-In-5xM">
                                                     <rect key="frame" x="134" y="5" width="51" height="31"/>
                                                 </switch>
                                             </subviews>
@@ -341,57 +341,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="whq-ll-otE" id="PYw-Cm-ETS">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mec-He-WNp">
-                                                    <rect key="frame" x="8" y="6" width="584" height="33"/>
-                                                    <color key="backgroundColor" red="0.19215688109397888" green="0.80392163991928101" blue="0.16470588743686676" alpha="1" colorSpace="deviceRGB"/>
-                                                    <state key="normal">
-                                                        <attributedString key="attributedTitle">
-                                                            <fragment content="Add to Game">
-                                                                <attributes>
-                                                                    <font key="NSFont" size="18" name="HelveticaNeue"/>
-                                                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                                </attributes>
-                                                            </fragment>
-                                                        </attributedString>
-                                                    </state>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                            <integer key="value" value="10"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                                    </userDefinedRuntimeAttributes>
-                                                </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BYx-DB-KQN">
-                                                    <rect key="frame" x="8" y="6" width="584" height="33"/>
-                                                    <color key="backgroundColor" red="0.98823535442352295" green="0.050980396568775177" blue="0.10588236153125763" alpha="1" colorSpace="deviceRGB"/>
-                                                    <state key="normal">
-                                                        <attributedString key="attributedTitle">
-                                                            <fragment content="Remove from Game">
-                                                                <attributes>
-                                                                    <font key="NSFont" size="18" name="HelveticaNeue"/>
-                                                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                                </attributes>
-                                                            </fragment>
-                                                        </attributedString>
-                                                    </state>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                            <integer key="value" value="10"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                                    </userDefinedRuntimeAttributes>
-                                                </button>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="BYx-DB-KQN" firstAttribute="leading" secondItem="PYw-Cm-ETS" secondAttribute="leadingMargin" id="2em-Cn-sUh"/>
-                                                <constraint firstAttribute="centerY" secondItem="BYx-DB-KQN" secondAttribute="centerY" id="Je8-1C-LCL"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="mec-He-WNp" secondAttribute="trailing" id="O5L-Dd-TJb"/>
-                                                <constraint firstAttribute="centerY" secondItem="mec-He-WNp" secondAttribute="centerY" id="TL7-T0-Qmu"/>
-                                                <constraint firstItem="mec-He-WNp" firstAttribute="leading" secondItem="PYw-Cm-ETS" secondAttribute="leadingMargin" id="gbb-0d-YTu"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="BYx-DB-KQN" secondAttribute="trailing" id="osk-u2-Zoz"/>
-                                                <constraint firstAttribute="centerX" secondItem="mec-He-WNp" secondAttribute="centerX" id="qKz-AS-fo4"/>
-                                                <constraint firstAttribute="centerX" secondItem="BYx-DB-KQN" secondAttribute="centerX" id="rIg-UD-L1Z"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -403,7 +353,6 @@
                         </connections>
                     </tableView>
                     <connections>
-                        <outlet property="AddToGameButton" destination="mec-He-WNp" id="name-outlet-mec-He-WNp"/>
                         <outlet property="FanTeam" destination="v7a-pF-Vn4" id="name-outlet-v7a-pF-Vn4"/>
                         <outlet property="HeadsetId" destination="02S-Ba-QOD" id="name-outlet-02S-Ba-QOD"/>
                         <outlet property="HeadsetIdTableCell" destination="XoZ-VZ-tUA" id="name-outlet-XoZ-VZ-tUA"/>
@@ -412,7 +361,6 @@
                         <outlet property="PlayerId" destination="YWo-1L-mEe" id="name-outlet-YWo-1L-mEe"/>
                         <outlet property="PlayerIdCell" destination="ooa-t3-BH4" id="name-outlet-ooa-t3-BH4"/>
                         <outlet property="PlayerName" destination="emq-iE-rIi" id="name-outlet-emq-iE-rIi"/>
-                        <outlet property="RemoveFromGameButton" destination="BYx-DB-KQN" id="name-outlet-BYx-DB-KQN"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a47-rN-TTq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -447,4 +395,8 @@
             <point key="canvasLocation" x="2984" y="9"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Default.png" width="320" height="480"/>
+        <image name="Default-568h.png" width="640" height="1136"/>
+    </resources>
 </document>

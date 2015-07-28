@@ -13,20 +13,13 @@ namespace fansoffury.mobile
 			
 		}
 
-		public override void DidReceiveMemoryWarning ()
-		{
-			// Releases the view if it doesn't have a superview.
-			base.DidReceiveMemoryWarning ();
-
-			// Release any cached data, images, etc that aren't in use.
-		}
-
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			Console.WriteLine ("Here");
+			KeyboardUtil.RegisterKeyboardDismissalHandler (this.View);
+			KeyboardUtil.RegisterKeyboardDoneHandler (this.BaseURLField);
 			NavigationItem.SetRightBarButtonItem (new UIBarButtonItem ("Save", UIBarButtonItemStyle.Plain, (o, e) => {
-				AppSettings.BaseURL = BaseURLField.Text;
+				SetModelData();
 				var alert = new UIAlertView("Saved", "Settings saved", null, "Ok", null);
 				alert.Show();
 			}), true);
@@ -35,7 +28,17 @@ namespace fansoffury.mobile
 		public override void ViewWillAppear (bool animated)
 		{
 			base.ViewWillAppear (animated);
+			SetFormData ();
+		}
+
+		private void SetFormData()
+		{
 			BaseURLField.Text = AppSettings.BaseURL;
+		}
+
+		private void SetModelData()
+		{
+			AppSettings.BaseURL = BaseURLField.Text;
 		}
 	}
 }

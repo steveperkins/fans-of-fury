@@ -1,18 +1,15 @@
 ﻿using System;
-using UIKit;
 using System.Collections.Generic;
 using fansoffury.mobile.domain;
 using fansoffury.mobile.services;
+using UIKit;
 
 namespace fansoffury.mobile
 {
 	public partial class PlayerListViewController : UIViewController
 	{
-		UITableView playerTableView;
+		UITableView _playerTableView;
 		List<Player> _players;
-
-		[Ninject.Inject()]
-		public IPlayerService PlayerService {get;set;}
 
 		public PlayerListViewController (IntPtr handle) : base (handle)
 		{
@@ -29,26 +26,18 @@ namespace fansoffury.mobile
 				NavigationController.PushViewController (p, true);
 			}), true);
 
-			playerTableView = new UITableView (View.Bounds);
+			_playerTableView = new UITableView (View.Bounds);
 
 			if (_players == null) {
 				_players = new List<Player> ();
-//				_players.Add (new Player ("1") { Name = "Sample 1", HeadsetId = 1 });
-//				_players.Add (new Player ("2") { Name = "Sample 2", HeadsetId = 2 });
 			}
-			Add (playerTableView);
+			Add (_playerTableView);
 		}
 
 		public override void ViewWillAppear (bool animated)
 		{
 			base.ViewWillAppear (animated);
-			playerTableView.Source = new PlayerTableViewSource (_players, this);
-		}
-
-		public override void DidReceiveMemoryWarning ()
-		{
-			base.DidReceiveMemoryWarning ();
-			// Release any cached data, images, etc that aren't in use.
+			_playerTableView.Source = new PlayerTableViewSource (_players, this);
 		}
 
 		public void AddPlayer(Player player)

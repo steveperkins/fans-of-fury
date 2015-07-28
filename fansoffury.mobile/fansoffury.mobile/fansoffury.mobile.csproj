@@ -148,7 +148,6 @@
     <Folder Include="Controllers\" />
     <Folder Include="TableSources\" />
     <Folder Include="Utility\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fansoffury.mobile.domain\fansoffury.mobile.domain.csproj">
