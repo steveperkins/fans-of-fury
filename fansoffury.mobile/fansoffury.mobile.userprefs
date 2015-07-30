@@ -1,21 +1,36 @@
 ﻿<Properties StartupItem="fansoffury.mobile/fansoffury.mobile.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone6.8.4" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="fansoffury.mobile/Controllers/HeadsetTableSelectionController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="fansoffury.mobile/Controllers/PlayerViewController.cs">
     <Files>
-      <File FileName="fansoffury.mobile/Controllers/PlayerListViewController.cs" Line="3" Column="34" />
-      <File FileName="fansoffury.mobile.domain/Headset.cs" Line="3" Column="28" />
-      <File FileName="fansoffury.mobile.domain/Player.cs" Line="9" Column="35" />
-      <File FileName="fansoffury.mobile/Controllers/PlayerViewController.cs" Line="20" Column="12" />
-      <File FileName="fansoffury.mobile/TableSources/PlayerTableViewSource.cs" Line="15" Column="46" />
-      <File FileName="fansoffury.mobile/TableSources/HeadsetTableViewSource.cs" Line="14" Column="34" />
-      <File FileName="fansoffury.mobile.services/Interfaces/IPlayerService.cs" Line="7" Column="3" />
-      <File FileName="fansoffury.mobile.services/PlayerService.cs" Line="5" Column="2" />
-      <File FileName="fansoffury.mobile/AppDelegate.cs" Line="31" Column="55" />
-      <File FileName="fansoffury.mobile/Controllers/HeadsetTableSelectionController.cs" Line="19" Column="5" />
+      <File FileName="fansoffury.mobile/Controllers/PlayerViewController.cs" Line="182" Column="46" />
+      <File FileName="fansoffury.mobile/Main.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.domain/Headset.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.domain/Player.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/Controllers/HeadsetTableSelectionController.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/TableSources/HeadsetTableViewSource.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.domain/JsonHeadset.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.services/PlayerService.cs" Line="37" Column="24" />
+      <File FileName="fansoffury.mobile.services/HeadsetService.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/Controllers/SettingsController.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/Controllers/PlayerListViewController.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/TableSources/PlayerTableViewSource.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/Utility/KeyboardUtil.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile/AppDelegate.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.domain/Fan.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.domain/JsonResponse.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.domain/MeasurementType.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.services/Interfaces/IHeadsetService.cs" Line="1" Column="1" />
+      <File FileName="fansoffury.mobile.services/Interfaces/IPlayerService.cs" Line="1" Column="1" />
+      <File FileName="../../../../../../Library/Frameworks/Xamarin.iOS.framework/Versions/8.10.3.2/lib/mono/2.1/Xamarin.iOS.Common.targets" Line="9" Column="20" />
+      <File FileName="fansoffury.mobile.domain/AppSettings.cs" Line="8" Column="55" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/bradypotaczek/Projects/omni/ThatConference2015/fansoffury.mobile/fansoffury.mobile.domain/Player.cs" line="10" column="1" />
+      <Breakpoint file="/Users/bradypotaczek/Projects/omni/ThatConference2015/fansoffury.mobile/fansoffury.mobile/Services/PlayerService.cs" line="70" column="1" />
+      <Breakpoint file="/Users/bradypotaczek/Projects/omni/ThatConference2015/fansoffury.mobile/fansoffury.mobile/Services/PlayerService.cs" line="67" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

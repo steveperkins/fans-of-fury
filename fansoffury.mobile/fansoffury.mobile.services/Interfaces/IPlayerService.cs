@@ -6,8 +6,8 @@ namespace fansoffury.mobile.services
 {
 	public interface IPlayerService
 	{
-		Task<Player> GetPlayer(string id);
-		void AssignPlayer (Player player);
+		Player GetPlayer(string id);
+		Player AssignPlayer (JsonHeadset headset);
 	}
 }
 

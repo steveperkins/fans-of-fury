@@ -11,9 +11,9 @@ namespace fansoffury.mobile
 		const string CellIdentifier = "HeadsetTableCell";
 
 		PlayerViewController _controller;
-		private int? _selectedHeadsetId;
+		private string _selectedHeadsetId;
 
-		public HeaderTableViewSource (IEnumerable<Headset> items, int? selectedHeadset, PlayerViewController controller)
+		public HeaderTableViewSource (IEnumerable<Headset> items, string selectedHeadset, PlayerViewController controller)
 		{
 			Headsets = items.ToList();
 			_selectedHeadsetId = selectedHeadset;

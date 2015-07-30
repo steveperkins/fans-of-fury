@@ -16,10 +16,6 @@ namespace fansoffury.mobile
 	{
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
-		UIButton AddToGameButton { get; set; }
-
-		[Outlet]
-		[GeneratedCode ("iOS Designer", "1.0")]
 		UISegmentedControl FanTeam { get; set; }
 
 		[Outlet]
@@ -36,6 +32,10 @@ namespace fansoffury.mobile
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UISwitch InGameToggle { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UITextField PlayerId { get; set; }
 
 		[Outlet]
@@ -46,16 +46,8 @@ namespace fansoffury.mobile
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UITextField PlayerName { get; set; }
 
-		[Outlet]
-		[GeneratedCode ("iOS Designer", "1.0")]
-		UIButton RemoveFromGameButton { get; set; }
-
 		void ReleaseDesignerOutlets ()
 		{
-			if (AddToGameButton != null) {
-				AddToGameButton.Dispose ();
-				AddToGameButton = null;
-			}
 			if (FanTeam != null) {
 				FanTeam.Dispose ();
 				FanTeam = null;
@@ -72,6 +64,10 @@ namespace fansoffury.mobile
 				HeadsetType.Dispose ();
 				HeadsetType = null;
 			}
+			if (InGameToggle != null) {
+				InGameToggle.Dispose ();
+				InGameToggle = null;
+			}
 			if (PlayerId != null) {
 				PlayerId.Dispose ();
 				PlayerId = null;
@@ -83,10 +79,6 @@ namespace fansoffury.mobile
 			if (PlayerName != null) {
 				PlayerName.Dispose ();
 				PlayerName = null;
-			}
-			if (RemoveFromGameButton != null) {
-				RemoveFromGameButton.Dispose ();
-				RemoveFromGameButton = null;
 			}
 		}
 	}

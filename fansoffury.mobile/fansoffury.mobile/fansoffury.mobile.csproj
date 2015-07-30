@@ -57,8 +57,14 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>true</MtouchProfiling>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: Brady Potaczek (296428NYQS)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchI18n>
+    </MtouchI18n>
+    <CodesignProvision>d6677e51-46d2-4c78-8b73-367b4ac1eada</CodesignProvision>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -133,8 +139,10 @@
     <Compile Include="TableSources\PlayerTableViewSource.cs" />
     <Compile Include="TableSources\HeadsetTableViewSource.cs" />
     <Compile Include="Utility\KeyboardUtil.cs" />
-    <Compile Include="Services\Interfaces\IPlayerService.cs" />
-    <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\SettingsController.designer.cs">
+      <DependentUpon>SettingsController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
@@ -146,7 +154,6 @@
     <Folder Include="Controllers\" />
     <Folder Include="TableSources\" />
     <Folder Include="Utility\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fansoffury.mobile.domain\fansoffury.mobile.domain.csproj">

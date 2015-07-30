@@ -34,8 +34,8 @@ namespace fansoffury.mobile
 				cell = new UITableViewCell (UITableViewCellStyle.Value1, CellIdentifier);
 			}
 
-			cell.TextLabel.Text = player.Name;
-			cell.DetailTextLabel.Text = "(Headset: " + player.HeadsetId + ")";
+			cell.TextLabel.Text = player.Display;
+			cell.DetailTextLabel.Text = "Headset: " + player.HeadsetId + "";
 
 			return cell;
 		}

@@ -1,14 +1,12 @@
-﻿
-using System;
-
-using Foundation;
-using UIKit;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using fansoffury.mobile.domain;
-using fansoffury.mobile.services;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using fansoffury.mobile.domain;
+using fansoffury.mobile.services;
+using Foundation;
+using UIKit;
 
 namespace fansoffury.mobile
 {
@@ -18,15 +16,14 @@ namespace fansoffury.mobile
 		private PlayerListViewController _playerListViewController;
 		private bool _newPlayer;
 		private IPlayerService _playerService;
+		private IHeadsetService _headsetService;
 
 		public PlayerViewController (IntPtr handle) : base (handle)
 		{
 			View.LayoutMargins = new UIEdgeInsets (20, 0, 0, 0);
-			Headsets = new List<Headset> () {
-				new Headset () { HeadsetId = 1, HeadsetName = "Headset 1" },
-				new Headset () { HeadsetId = 2, HeadsetName = "Headset 2" }
-			};
 			_playerService = new PlayerService ();
+			_headsetService = new HeadsetService ();
+			Headsets = _headsetService.GetHeadsets ();
 		}
 
 		public List<Headset> Headsets { get; set; }
@@ -46,26 +43,18 @@ namespace fansoffury.mobile
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			AddToGameButton.Hidden = true;
-			RemoveFromGameButton.Hidden = true;
 			KeyboardUtil.RegisterKeyboardDismissalHandler (this.View);
 			KeyboardUtil.RegisterKeyboardDoneHandler (this.PlayerName);
-			AddToGameButton.TouchUpInside+= (sender, e) => {
-				ChangeGameState(true);
-			};
-			RemoveFromGameButton.TouchUpInside+= (sender, e) =>  {
-				ChangeGameState(false);
-			};
 			AddSaveButton ();
 		}
 
 		public override void ViewWillAppear (bool animated)
 		{
 			base.ViewWillAppear (animated);
-			BindLabels ();
+			SetFormData ();
 		}
 
-		public void SelectHeadset (int headsetId)
+		public void SelectHeadset (string headsetId)
 		{
 			if (_player != null) {
 				_player.HeadsetId = headsetId;
@@ -75,12 +64,23 @@ namespace fansoffury.mobile
 
 		#region Private Methods
 
-		private void SetPlayerInfo()
+		private void SetModelData()
 		{
 			if (_player != null){
 				_player.Name = PlayerName.Text;
-				_player.MeasurementType = HeadsetType.SelectedSegment == 0 ? MeasurementTypeEnum.Attention.ToString ().ToUpper () : MeasurementTypeEnum.Meditation.ToString ().ToUpper ();
-				_player.FanValue = FanTeam.SelectedSegment == 0 ? FanEnum.Blue : FanEnum.Red;
+				_player.MeasurementTypeValue = HeadsetType.SelectedSegment == 0 ? MeasurementTypeEnum.Attention : MeasurementTypeEnum.Meditation;
+				switch (FanTeam.SelectedSegment) {
+				case 0:
+					_player.FanValue = FanEnum.Blue;
+					break;
+				case 1:
+					_player.FanValue = FanEnum.Red;
+					break;
+				default:
+					_player.FanValue = FanEnum.Unknown;
+					break;
+				}
+				_player.InGame = InGameToggle.On;
 			}
 		}
 
@@ -88,13 +88,13 @@ namespace fansoffury.mobile
 		{
 			HeadsetIdTableCell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
 			HeadsetIdTableCell.AddGestureRecognizer (new UITapGestureRecognizer (() => {
-				SetPlayerInfo();
+				SetModelData();
 				var vc = Storyboard.InstantiateViewController ("HeadsetTableSelectionController") as HeadsetTableSelectionController;
-				vc.SetDataSource (new HeaderTableViewSource (Headsets, _player.HeadsetId, this), 1);
+				vc.SetDataSource (new HeaderTableViewSource (Headsets, _player.HeadsetId, this));
 				NavigationController.PushViewController (vc, true);
 			}));
-
 		}
+
 		private void AddSaveButton()
 		{
 			NavigationItem.SetRightBarButtonItem (new UIBarButtonItem ("Save", UIBarButtonItemStyle.Plain, (o, e) => {
@@ -113,17 +113,28 @@ namespace fansoffury.mobile
 					id = result.Text.Substring (result.Text.LastIndexOf ('/') + 1, result.Text.Length - result.Text.LastIndexOf ('/') - 1);
 				}
 			} else {
-				id = "TEST";
+				if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.DEVICE) {
+					var alert = new UIAlertView ("Error", "No available camera found on device", null, "Ok", null);
+					alert.Show ();
+					return;
+				} else {
+					Console.WriteLine ("Simulator, faking ID");
+					id = "TEST";
+				}
 			}
 			Console.WriteLine ("PlayerID: " + id);
 			_newPlayer = true;
-			_player = await _playerService.GetPlayer (id);
-			//_player = new Player (id);
-			BindLabels ();
+			try {
+				_player = _playerService.GetPlayer (id);
+			} catch (Exception e) {
+				var alert = new UIAlertView ("Error", "There was an error retrieving the player\n" + e.Message, null, "Ok", null);
+				alert.Show ();
+			}
+			SetFormData ();
 			AddHeadsetGesture ();
 		}
 
-		private void BindLabels ()
+		private void SetFormData ()
 		{
 			if (_player != null) {
 				PlayerId.Text = _player.PlayerId;
@@ -132,10 +143,8 @@ namespace fansoffury.mobile
 					HeadsetId.Text = Headsets.Single (x => x.HeadsetId == _player.HeadsetId).HeadsetName;
 				}
 				HeadsetType.SelectedSegment = _player.MeasurementTypeEnum == MeasurementTypeEnum.Meditation ? 1 : 0;
-				if (_player.FanValue != FanEnum.Unknown){
-					FanTeam.SelectedSegment = (int)_player.FanValue;
-				}
-				ChangeGameState (_player.InGame);
+				FanTeam.SelectedSegment = (int)_player.FanValue;
+				InGameToggle.On = _player.InGame;
 			}
 		}
 
@@ -144,36 +153,43 @@ namespace fansoffury.mobile
 			string error = null;
 			if (_player == null) {
 				error = "Invalid Player";
-			} 
-
-			if (string.IsNullOrEmpty (_player.PlayerId)) {
+			} else if (string.IsNullOrEmpty (_player.PlayerId)) {
 				error = "Invalid PlayerID";
 			} else if (string.IsNullOrEmpty (_player.Name)) {
 				error = "Player Name is required";
 			}
 			if (!string.IsNullOrEmpty (error)) {
-				var alert = new UIAlertView ("Error", "Invalid Player", null, "Ok", null);
+				var alert = new UIAlertView ("Error", "Invalid Player - " + error, null, "Ok", null);
 				alert.Show ();
 			} else {
-				SetPlayerInfo ();
-				if (_newPlayer && _player != null) {
+				SetModelData ();
+				if (_newPlayer) {
 					_playerListViewController.AddPlayer (_player);
+				}
+				if (_player.InGame && _player.FanValue != FanEnum.Unknown && !string.IsNullOrEmpty(_player.HeadsetId)) {
+					try {
+						var response = _playerService.AssignPlayer (new JsonHeadset(_player));
+					} catch (Exception e) {
+						var alert = new UIAlertView ("Error", e.Message, null, "Ok", null);
+						alert.Show ();
+					}
 				}
 				Console.WriteLine ("Save Player");
 				NavigationController.PopViewController (true);
 			}
 		}
 
-		private void ChangeGameState(bool inGame)
-		{
-			AddToGameButton.Hidden = inGame;
-			RemoveFromGameButton.Hidden = !inGame;
-		}
-
-		private void ChangeFanTeam(FanEnum fan)
-		{
-			
-		}
+//		private void ChangeGameState(bool inGame)
+//		{
+//			AddToGameButton.Hidden = inGame;
+//			RemoveFromGameButton.Hidden = !inGame;
+//			_player.InGame = inGame;
+//		}
+//
+//		private void ChangeFanTeam(FanEnum fan)
+//		{
+//			Console.WriteLine(fan);
+//		}
 
 		#endregion
 
