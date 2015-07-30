@@ -167,8 +167,12 @@ namespace fansoffury.mobile
 					_playerListViewController.AddPlayer (_player);
 				}
 				if (_player.InGame && _player.FanValue != FanEnum.Unknown && !string.IsNullOrEmpty(_player.HeadsetId)) {
-					var response = _playerService.AssignPlayer (new JsonHeadset(_player));
-					Console.WriteLine (response);
+					try {
+						var response = _playerService.AssignPlayer (new JsonHeadset(_player));
+					} catch (Exception e) {
+						var alert = new UIAlertView ("Error", e.Message, null, "Ok", null);
+						alert.Show ();
+					}
 				}
 				Console.WriteLine ("Save Player");
 				NavigationController.PopViewController (true);
