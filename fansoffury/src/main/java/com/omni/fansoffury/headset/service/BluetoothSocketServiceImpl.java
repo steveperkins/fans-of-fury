@@ -8,7 +8,7 @@ import com.omni.fansoffury.headset.listener.NoOpListener;
 import com.sperkins.mindwave.event.MindwaveEventListener;
 import com.sperkins.mindwave.socket.BluetoothSocket;
 
-@Service
+//@Service
 public class BluetoothSocketServiceImpl implements BluetoothSocketService {
 	
     private BluetoothSocket socket;
