@@ -134,4 +134,22 @@ public class PlayerController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/api/player/{headsetId}/reconnect", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonResponse reconnectHeadset(@PathVariable("headsetId") String headsetId) {
+		logger.debug("PUT to /api/player/{}/reconnect", headsetId);
+		
+		JsonResponse response = new JsonResponse();
+		response.setStatus("success");
+		try {
+			if(StringUtils.isEmpty(headsetId)) throw new IllegalArgumentException("Headset ID is required");
+			
+		} catch(Exception e) {
+			response.setStatus("error");
+			String error = "Could not reconnect headset " + headsetId + ": " + e.getMessage();
+			response.setErrors(Arrays.asList( new String[]{ error }));
+			logger.error(error, e);
+		}
+		return response;
+	}
+	
 }

@@ -2,8 +2,6 @@ package com.omni.fansoffury.headset.service;
 
 import java.io.IOException;
 
-import org.springframework.stereotype.Service;
-
 import com.omni.fansoffury.headset.listener.NoOpListener;
 import com.sperkins.mindwave.event.MindwaveEventListener;
 import com.sperkins.mindwave.socket.BluetoothSocket;
@@ -23,7 +21,13 @@ public class BluetoothSocketServiceImpl implements BluetoothSocketService {
 	
 	@Override
 	public void removeListener(MindwaveEventListener listener) {
-		// TODO looks like I forgot to make a "removeListener" method in the bluetooth-java interface
+		socket.removeListener(listener);
+	}
+	
+	
+	@Override	
+	public void reconnect(String headsetId) throws IOException {
+		socket.connect(headsetId);
 	}
 	
 	@Override
