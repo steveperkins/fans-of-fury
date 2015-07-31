@@ -3,6 +3,7 @@ package com.omni.fansoffury.balance;
 import org.springframework.stereotype.Component;
 
 import com.omni.fansoffury.model.Player;
+import com.sperkins.mindwave.event.EventType;
 
 @Component
 public class OffsetFanSpeedBalanceStrategyImpl implements FanSpeedBalanceStrategy {
@@ -26,7 +27,9 @@ public class OffsetFanSpeedBalanceStrategyImpl implements FanSpeedBalanceStrateg
 	 * @return
 	 */
 	protected Double calculateOffset(Player player) {
-		Double offset = BASE_OFFSET - (player.getAttentionLevel() * 5);
+		Double offset = 0.0;
+		if(EventType.ATTENTION.equals(player.getMeasurementType())) offset = BASE_OFFSET - (player.getAttentionLevel() * 5);
+		else offset = BASE_OFFSET - (player.getAttentionLevel() * 5);
 		return offset;
 	}
 
