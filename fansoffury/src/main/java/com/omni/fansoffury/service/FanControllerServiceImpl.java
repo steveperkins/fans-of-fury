@@ -63,14 +63,12 @@ public class FanControllerServiceImpl implements FanControllerService {
 		}
 		
 	}
-	
+
 	protected Double percentageToAnalog(Double percentage, Device fanDevice) {
+		Double analogValue = 10 + (percentage * 0.7);
 		if(percentage >= fanDevice.getMaxInputValue()) return fanDevice.getMaxInputValue();
 		if(percentage <= fanDevice.getMinInputValue()) return fanDevice.getMinInputValue();
 		
-		Double delta = fanDevice.getMaxInputValue() - fanDevice.getMinInputValue() + 1;
-		Double analogValue = (percentage / 100) * delta;
-		analogValue += fanDevice.getMinInputValue();
 		return analogValue;
 		
 	}
