@@ -2,9 +2,15 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Omni Resources Fans of Fury!</h1>
-    <p class="lead">This could be marketing schpiel about why we're so awesome!</p>
+<div class="row">
+    <img src="@Url.Content("~/Content/fof-scores.jpg")" class="img-responsive" alt="Fans of Fury High Scores">
 </div>
 
-<h2>High Score Board?</h2>
+<div class="row">
+    <div class="col-md-9">
+        <h2>High Score Board</h2>
+    </div>
+    <div class="col-md-3">
+        @Html.Partial("_RelatedLinks")
+    </div>
+</div>

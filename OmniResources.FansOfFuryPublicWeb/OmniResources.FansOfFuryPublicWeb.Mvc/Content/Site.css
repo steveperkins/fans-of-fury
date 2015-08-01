@@ -1,10 +1,20 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    font-family: Lato;
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.navbar {
+    font-family: 'Oswald';
+    font-size: 16px;
+}
+
+ul.navbar-nav li a:hover {
+    border-bottom: 1px solid #e57200;
 }

@@ -4,77 +4,83 @@
     ViewBag.Title = "Welcome!";
 }
 
-<div class="jumbotron">
-    <h1>QR Code Landing Page!</h1>
-    <p class="lead">There will be a survey on this page with questions that marketing wants conference attendees to answer.</p>
+<div class="row">
+    <img src="@Url.Content("~/Content/fof-game.jpg")" class="img-responsive" alt="Fans of Fury High Scores">
 </div>
 
-@if (!ViewContext.ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger" role="alert">
-        @Html.ValidationSummary()
-    </div>
-}
-@if (Model.SuccessfulPost)
-{
-    <div class="alert alert-success" role="alert">
-        Thanks for filling out the survey!  If you want to change your responses, feel free to do so below!
-    </div>
-}
+<div class="row">
+    <div class="col-md-9" style="padding-top:25px;">
+        @if (!ViewContext.ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger" role="alert">
+                @Html.ValidationSummary()
+            </div>
+        }
+        @if (Model.SuccessfulPost)
+        {
+            <div class="alert alert-success" role="alert">
+                Thanks for filling out the survey!  If you want to change your responses, feel free to do so below!
+            </div>
+        }
 
-@using (Html.BeginForm("Index", "QrCode", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    <div class="form-group">
-        @Html.LabelFor(x => x.FirstName, new { @class = "col-sm-2 control-label" })
-        <div class="col-sm-6">
-            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.FirstName, null, new { @class = "help-block" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(x => x.LastName, new { @class = "col-sm-2 control-label" })
-        <div class="col-sm-6">
-            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.LastName, null, new { @class = "help-block"})
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(x => x.EmailAddress, new {@class = "col-sm-2 control-label"})
-        <div class="col-sm-6">
-            @Html.TextBoxFor(x => x.EmailAddress, new {@class = "form-control"})
-            @Html.ValidationMessageFor(x => x.EmailAddress, null, new {@class = "help-block"})
-        </div>
-    </div>
-    if (Model.State != SurveyResponseViewModel.UserState.UserDataExists)
-    {
-        <div class="form-group">
-            @Html.LabelFor(x => x.ScoreboardName, new {@class = "col-sm-2 control-label"})
-            <div class="col-sm-6">
-                @Html.TextBoxFor(x => x.ScoreboardName, new {@class = "form-control", placeholder = "If you'd like your name to show on the scoreboard, enter it here!"})
-                @Html.ValidationMessageFor(x => x.ScoreboardName, null, new {@class = "help-block"})
+        @using (Html.BeginForm("Index", "QrCode", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.FirstName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FirstName, null, new { @class = "help-block" })
+                </div>
             </div>
-        </div>
-    }
-    if (Model.State == SurveyResponseViewModel.UserState.New)
-    {
-        <div class="form-group">
-            @Html.LabelFor(x => x.Password, new {@class = "col-sm-2 control-label"})
-            <div class="col-sm-6">
-                @Html.PasswordFor(x => x.Password, new {@class = "form-control", placeholder = "If you enter a name for the scoreboard, you must enter a password."})
-                @Html.ValidationMessageFor(x => x.Password, null, new {@class = "help-block"})
+            <div class="form-group">
+                @Html.LabelFor(x => x.LastName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.LastName, null, new { @class = "help-block" })
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(x => x.ConfirmPassword, new {@class = "col-sm-2 control-label"})
-            <div class="col-sm-6">
-                @Html.PasswordFor(x => x.ConfirmPassword, new {@class = "form-control"})
-                @Html.ValidationMessageFor(x => x.ConfirmPassword, null, new {@class = "help-block"})
+            <div class="form-group">
+                @Html.LabelFor(x => x.EmailAddress, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.EmailAddress, null, new { @class = "help-block" })
+                </div>
             </div>
-        </div>
-    }
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-6">
-            <button type="submit" class="btn btn-default">Submit</button>
-        </div>
+            if (Model.State != SurveyResponseViewModel.UserState.UserDataExists)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ScoreboardName, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(x => x.ScoreboardName, new { @class = "form-control", placeholder = "If you'd like your name to show on the scoreboard, enter it here!" })
+                        @Html.ValidationMessageFor(x => x.ScoreboardName, null, new { @class = "help-block" })
+                    </div>
+                </div>
+            }
+            if (Model.State == SurveyResponseViewModel.UserState.New)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Password, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "If you enter a name for the scoreboard, you must enter a password." })
+                        @Html.ValidationMessageFor(x => x.Password, null, new { @class = "help-block" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ConfirmPassword, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.ConfirmPassword, null, new { @class = "help-block" })
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-6">
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </div>
+            </div>
+        }
     </div>
-}
+    <div class="col-md-3">
+        @Html.Partial("_RelatedLinks")
+    </div>
+</div>
