@@ -2,11 +2,13 @@ package com.omni.fansoffury.headset.service;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Service;
+
 import com.omni.fansoffury.headset.listener.NoOpListener;
 import com.sperkins.mindwave.event.MindwaveEventListener;
 import com.sperkins.mindwave.socket.BluetoothSocket;
 
-//@Service
+@Service
 public class BluetoothSocketServiceImpl implements BluetoothSocketService {
 	
     private BluetoothSocket socket;

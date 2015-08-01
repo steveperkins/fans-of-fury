@@ -24,7 +24,7 @@ import com.sperkins.mindwave.event.MindwaveEventListener;
  * @author steve.perkins
  *
  */
-@Service
+//@Service
 public class FakeBluetoothSocketServiceImpl implements BluetoothSocketService {
 	private static Logger logger = LoggerFactory.getLogger(FakeBluetoothSocketServiceImpl.class);
 	
