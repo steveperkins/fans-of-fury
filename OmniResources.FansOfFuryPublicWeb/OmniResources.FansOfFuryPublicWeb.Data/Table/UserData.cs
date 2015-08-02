@@ -19,6 +19,11 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table
         public string ScoreboardName { get; set; }
 
         /// <summary>
+        /// Gets or sets the user's score
+        /// </summary>
+        public int Score { get; set; }
+
+        /// <summary>
         /// Gets or sets a (BCrypt encrypted) password for the user that they must enter if they want to have their name on the scoreboard
         /// </summary>
         public string HashedPassword { get; set; }

@@ -14,20 +14,6 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Models.QrCode
             Mapper.CreateMap<SurveyResponseViewModel, UserData>().ReverseMap();
         }
 
-        public enum UserState
-        {
-            New,
-            UserDataExists,
-            Authenticated
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether someone has claimed that QR code yet
-        /// </summary>
-        public UserState State { get; set; }
-
-        public bool SuccessfulPost { get; set; }
-
         /// <summary>
         /// Gets or sets the first naame of the user
         /// </summary>

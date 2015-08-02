@@ -9,11 +9,6 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
     public interface ISurveyResponseRepository : ITableRepository<SurveyResponse>
     {
         /// <summary>
-        /// Gets the most recent survey response for the given user ID
-        /// </summary>
-        Task<SurveyResponse> GetCurrent(string userId);
-
-        /// <summary>
         /// Gets all SurveyResponses by user ID
         /// </summary>
         Task<List<SurveyResponse>> Get(string userId);

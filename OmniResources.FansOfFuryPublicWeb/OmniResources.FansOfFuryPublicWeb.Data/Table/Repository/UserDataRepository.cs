@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using WindowsAzure.Table.Extensions;
 
 namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
@@ -14,6 +15,14 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
         public UserDataRepository(string connectionString)
             : base(connectionString)
         {
+        }
+
+        /// <summary>
+        /// Returns all registered users in the system
+        /// </summary>
+        public async Task<List<UserData>> Get()
+        {
+            return await Table.ToListAsync();
         }
 
         /// <summary>

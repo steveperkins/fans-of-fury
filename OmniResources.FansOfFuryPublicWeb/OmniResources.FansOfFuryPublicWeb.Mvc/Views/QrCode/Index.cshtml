@@ -1,5 +1,4 @@
-﻿@using OmniResources.FansOfFuryPublicWeb.Mvc.Models.QrCode
-@model SurveyResponseViewModel
+﻿@model OmniResources.FansOfFuryPublicWeb.Mvc.Models.QrCode.SurveyResponseViewModel
 @{
     ViewBag.Title = "Welcome!";
 }
@@ -16,7 +15,7 @@
                 @Html.ValidationSummary()
             </div>
         }
-        @if (Model.SuccessfulPost)
+        @if (ViewData["Success"] != null)
         {
             <div class="alert alert-success" role="alert">
                 Thanks for filling out the survey!  If you want to change your responses, feel free to do so below!
@@ -46,33 +45,39 @@
                     @Html.ValidationMessageFor(x => x.EmailAddress, null, new { @class = "help-block" })
                 </div>
             </div>
-            if (Model.State != SurveyResponseViewModel.UserState.UserDataExists)
+            if (!string.IsNullOrWhiteSpace(Model.ScoreboardName))
             {
                 <div class="form-group">
-                    @Html.LabelFor(x => x.ScoreboardName, new { @class = "col-sm-2 control-label" })
+                    <label class="col-sm-2 control-label">Current Scoreboard Name</label>
                     <div class="col-sm-9">
-                        @Html.TextBoxFor(x => x.ScoreboardName, new { @class = "form-control", placeholder = "If you'd like your name to show on the scoreboard, enter it here!" })
-                        @Html.ValidationMessageFor(x => x.ScoreboardName, null, new { @class = "help-block" })
+                        <p class="form-control-static">@Model.ScoreboardName</p>
                     </div>
                 </div>
             }
-            if (Model.State == SurveyResponseViewModel.UserState.New)
-            {
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Password, new { @class = "col-sm-2 control-label" })
-                    <div class="col-sm-9">
-                        @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "If you enter a name for the scoreboard, you must enter a password." })
-                        @Html.ValidationMessageFor(x => x.Password, null, new { @class = "help-block" })
-                    </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ScoreboardName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBox("ScoreboardName", string.Empty, new { @class = "form-control", placeholder = "If you'd like your name to show on the scoreboard, enter it here!" })
+                    @Html.ValidationMessageFor(x => x.ScoreboardName, null, new { @class = "help-block" })
                 </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.ConfirmPassword, new { @class = "col-sm-2 control-label" })
-                    <div class="col-sm-9">
-                        @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.ConfirmPassword, null, new { @class = "help-block" })
-                    </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Password, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "If you enter a name for the scoreboard, you must enter a password." })
+                    @Html.ValidationMessageFor(x => x.Password, null, new { @class = "help-block" })
                 </div>
-            }
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ConfirmPassword, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.ConfirmPassword, null, new { @class = "help-block" })
+                </div>
+            </div>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-6">
                     <button type="submit" class="btn btn-default">Submit</button>
