@@ -1,5 +1,6 @@
 package com.omni.fansoffury.headset.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +24,7 @@ import com.sperkins.mindwave.event.MindwaveEventListener;
  * @author steve.perkins
  *
  */
-@Service
+//@Service
 public class FakeBluetoothSocketServiceImpl implements BluetoothSocketService {
 	private static Logger logger = LoggerFactory.getLogger(FakeBluetoothSocketServiceImpl.class);
 	
@@ -116,6 +117,10 @@ public class FakeBluetoothSocketServiceImpl implements BluetoothSocketService {
 			keepRunning = Boolean.FALSE;
 			logger.debug("FAKE: Shutting down fake headset data thread");
 		}
+	}
+
+	@Override
+	public void reconnect(String headsetId) throws IOException {
 	}
 	
 		

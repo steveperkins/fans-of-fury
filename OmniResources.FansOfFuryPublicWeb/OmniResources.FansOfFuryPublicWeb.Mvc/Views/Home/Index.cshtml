@@ -1,10 +1,36 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Fans of Fury Scoreboard";
 }
 
-<div class="jumbotron">
-    <h1>Omni Resources Fans of Fury!</h1>
-    <p class="lead">This could be marketing schpiel about why we're so awesome!</p>
+<div class="row">
+    <img src="@Url.Content("~/Content/fof-scores.jpg")" class="img-responsive" alt="Fans of Fury High Scores">
 </div>
 
-<h2>High Score Board?</h2>
+@Html.Partial("_RelatedLinks")
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h2>High Scores!</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ranking</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Rosack</td>
+                    <td>1 billion</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Schmidt</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

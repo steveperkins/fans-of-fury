@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using OmniResources.FansOfFuryPublicWeb.Data.Table;
@@ -25,22 +24,14 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
             if (string.IsNullOrWhiteSpace(id))
                 return RedirectToAction("Index", "Home");
 
-            if (!Authenticated)
-                UserId = id;
+            UserId = id;
 
             var existingUser = await _userDataRepo.Get(id);
 
-            var model = new SurveyResponseViewModel
-            {
-                State = CalculateUserState(existingUser)
-            };
+            var model = new SurveyResponseViewModel();
 
-            if (model.State == SurveyResponseViewModel.UserState.Authenticated)
-            {
-                var currentSurvey = await _surveyResponseRepo.GetCurrent(id);
-                Mapper.Map(existingUser, model);
-                Mapper.Map(currentSurvey, model);
-            }
+            if (existingUser != null)
+                model.ScoreboardName = existingUser.ScoreboardName;
 
             return View(model);
         }
@@ -48,54 +39,35 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(string id, SurveyResponseViewModel model)
         {
-            var existingUser = await _userDataRepo.Get(id);
-            model.State = CalculateUserState(existingUser);
-
             if (!ModelState.IsValid)
-            {
-                if (model.State != SurveyResponseViewModel.UserState.Authenticated || !ModelState.All(x => x.Value.Errors.Count == 0 || x.Key.Contains("Password")))
-                    return View(model);
+                return View(model);
 
-                ModelState.Clear();
-            }   
+            var existingUser = await _userDataRepo.Get(id);
 
-            if (model.State != SurveyResponseViewModel.UserState.UserDataExists && !string.IsNullOrEmpty(model.ScoreboardName))
+            if (!string.IsNullOrEmpty(model.ScoreboardName))
             {
                 existingUser = existingUser ?? new UserData();
+
+                if (!string.IsNullOrWhiteSpace(existingUser.HashedPassword) && !BCrypt.Net.BCrypt.Verify(model.Password, existingUser.HashedPassword))
+                {
+                    ModelState.AddModelError("Password", "A username has already been set for this user, and the password you entered does not match.  Please try again.");
+                    return View(model);
+                }
+
                 existingUser.ScoreboardName = model.ScoreboardName;
                 existingUser.UserId = id;
-
-                if (model.State == SurveyResponseViewModel.UserState.New && !string.IsNullOrEmpty(model.Password))
-                {
-                    existingUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
-                    Authenticated = true;
-                    model.State = SurveyResponseViewModel.UserState.Authenticated;
-                }
+                existingUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
                 await _userDataRepo.Save(existingUser);
             }
 
             var surveyResponse = Mapper.Map<SurveyResponse>(model);
             surveyResponse.UserId = id;
-            surveyResponse.Authenticated = Authenticated;
             await _surveyResponseRepo.Save(surveyResponse);
 
-            model.SuccessfulPost = true;
+            ViewData["Success"] = true;
 
             return View(model);
-        }
-
-        private SurveyResponseViewModel.UserState CalculateUserState(UserData existingUser)
-        {
-            if (existingUser != null)
-            {
-                if (UserId == existingUser.UserId && Authenticated)
-                    return SurveyResponseViewModel.UserState.Authenticated;
-
-                return SurveyResponseViewModel.UserState.UserDataExists;
-            }
-
-            return SurveyResponseViewModel.UserState.New;
         }
     }
 }

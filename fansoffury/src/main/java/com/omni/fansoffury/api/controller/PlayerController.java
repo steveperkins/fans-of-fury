@@ -98,7 +98,7 @@ public class PlayerController {
 			Player player = playerService.getPlayer(jsonHeadset.getPlayerId());
 			player.setMeasurementType(jsonHeadset.getMeasurementType());
 
-			// TODO what is the desired logic for when a player is moved from on-deck (no fan) to paying the game (conected fan)
+			// TODO what is the desired logic for when a player is moved from on-deck (no fan) to playing the game (conected fan)
 			// should a new player session be created?  Right now the fan for a player in this case will not be recorded
 			// and the start time will be from when they were on deck
 			if(null == headset.getPlayer()) {
@@ -128,6 +128,24 @@ public class PlayerController {
 		} catch(Exception e) {
 			response.setStatus("error");
 			String error = "Could not map player to headset: " + e.getMessage();
+			response.setErrors(Arrays.asList( new String[]{ error }));
+			logger.error(error, e);
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/api/player/{headsetId}/reconnect", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public JsonResponse reconnectHeadset(@PathVariable("headsetId") String headsetId) {
+		logger.debug("PUT to /api/player/{}/reconnect", headsetId);
+		
+		JsonResponse response = new JsonResponse();
+		response.setStatus("success");
+		try {
+			if(StringUtils.isEmpty(headsetId)) throw new IllegalArgumentException("Headset ID is required");
+			
+		} catch(Exception e) {
+			response.setStatus("error");
+			String error = "Could not reconnect headset " + headsetId + ": " + e.getMessage();
 			response.setErrors(Arrays.asList( new String[]{ error }));
 			logger.error(error, e);
 		}

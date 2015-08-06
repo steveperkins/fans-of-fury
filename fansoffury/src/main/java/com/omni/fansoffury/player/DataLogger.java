@@ -3,7 +3,6 @@ package com.omni.fansoffury.player;
 
 import com.omni.fansoffury.headset.service.BluetoothSocketService;
 import com.omni.fansoffury.headset.service.HeadsetService;
-import com.omni.fansoffury.level.LevelingStrategy;
 import com.omni.fansoffury.model.event.ScoreChangedEvent;
 import com.sperkins.mindwave.event.*;
 
@@ -37,9 +36,6 @@ public class DataLogger implements ScoreListener, MindwaveEventListener {
 	@Autowired
 	private HeadsetService headSetService;
 	
-	@Autowired
-	private LevelingStrategy levelingStrategy;
-
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	

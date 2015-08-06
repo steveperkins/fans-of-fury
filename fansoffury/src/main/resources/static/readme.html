@@ -29,7 +29,8 @@ h4 {
 		<li>Click Project/Properties and go to the Project Facets area</li>
 		<li>Select Dynamic Web Module and Java, then click Apply and OK</li>
 	</ul>
-	<p>Start the server by running com.omni.fansoffury.FansOfFuryWebApplication as a Java application.</p>
+	<p>Start the server by running <span class="code">com.omni.fansoffury.FansOfFuryWebApplication</span> as a Java application.</p>
+	<p>You may also need to add all libraries in WebContent/WEB-INF/lib to your build path by selecting them all, right-clicking and going to Build Path &gt; Add to build path.</p>
 </div>
 <h2>Database configuration</h2>
 <div>
@@ -84,6 +85,32 @@ h4 {
 	
 	<p>Note: At this time the code detecting headset state in score.html will not show the very first not-playing headset EEG data. When the page is first loaded you will have to manually assign a headset to a game side, then replace it with each of the other headsets in turn.</p>    
 
+<h2>Simulating Data/Devices</h2>
+<div>
+	<p>It's a lot easier to code in a fixture instead of repeatedly setting up all the hardware. manageGame.html ships with this project to make it easier to connect socket listeners and consume the REST API.</p>
+	<p><strong>To simulate a device controller (Raspberry Pi) and devices (fans):</strong>
+		<ol>
+			<li>Run the server</li>
+			<li>Open <a href="http://localhost:8080/manageGame.html">manageGame.html</a></li>
+			<li>Click the Connect button under the Fan Controller Websocket heading. This will emulate a Raspberry Pi, registering two fans (IDs 0 and 1) with the server</li>
+			<li>You can now assign players to fans 0 and 1</li>
+		</ol>
+	</p>
+	<p>This project ships with two data simulators: <span class="code">com.omni.fansoffury.headset.service.FakeBluetoothSocketServiceImpl</span> and <span class="code">com.omni.fansoffury.socket.handler.FanControllerSocketListener.FakeScoreChangeThread</span>.</p>
+	<p><strong>To simulate headset data (generate random numbers for every connected headset):</strong>
+		<ol>
+			<li>Comment out the @Service annotation in <span class="code">com.omni.fansoffury.headset.service.BluetoothSocketServiceImpl</span></li>
+			<li>Uncomment the @Service annotation in <span class="code">com.omni.fansoffury.headset.service.FakeBluetoothSocketServiceImpl</span></li>
+			<li>Run the server. Start a device controller (either via manageGame.html or with your Raspberry Pi). For each player you assign to a headset (via manageGame.html or the REST API), random headset data events will be generated every second.</li>
+		</ol>
+	</p>
+	<p><strong>To simulate players scoring goals:</strong>
+		<ol>
+			<li>Uncomment Line 65 in <span class="code">com.omni.fansoffury.socket.handler.FanControllerSocketListener</span>, where it starts fakeDataThread.</li>
+			<li>Run the server. Start a device controller (either via manageGame.html or with your Raspberry Pi). For each player you assign to a device/fan (via manageGame.html or the REST API), "goal scored" events will be generated every three seconds.</li>
+		</ol>
+	</p>
+</div>
 
 <h2>Interfaces</h2>
 	<h3>REST</h3>
@@ -110,6 +137,8 @@ h4 {
 		<h4>GET /api/player/{STR playerId}</h4>
 		<div>
 			Retrieves the player with the ID {playerId}.
+			<br />
+			Example response:
 			<div class="code">
 				{"status":"success","message":null,"errors":null,"object":{"id":"0","attentionLevel":0.0,"meditationLevel":0.0,"headsetId":null,"measurementType":"ATTENTION","score":0},"error":false}
 			</div>
@@ -118,6 +147,8 @@ h4 {
 		<h4>PUT /api/player</h4>
 		<div>
 			Assigns the player with ID {playerId} to a headset and possibly a fan based on the JSON in the request body. If the fanId property is null or omitted, the player is assigned to the specified headset but not a fan. If the player was already assigned to a fan, they are unassigned and their 'session' ended.
+			<br />
+			Example request body:
 			<div class="code">
 				{playerId: "0", headsetId: "74E543D575B0", measurementType: "ATTENTION", fanId: "0"}
 			</div>
@@ -125,10 +156,15 @@ h4 {
 
 		<h4>GET /api/devices</h4>
 		<div>
-			Retrieves the list of currently-registered devices.
+			Retrieves the list of currently-registered devices. Example response:
 			<div class="code">
 				{"status":"success","message":null,"errors":null,"object":[{"id":"0","type":"fan","minInputValue":9.0,"maxInputValue":15.0,"deviceController":null},{"id":"1","type":"fan","minInputValue":9.0,"maxInputValue":15.0,"deviceController":null}],"error":false}
 			</div>
+		</div>
+		
+		<h4>PUT /api/player/{STR headsetId}/reconnect</h4>
+		<div>
+			Attempts to re-establish a Bluetooth connection to the given {headsetId}.
 		</div>
 	</div>
 	<h3>Websockets</h3>
@@ -184,5 +220,30 @@ h4 {
 
 	</div>
 
+<h2>Player Leveling and Fan Speed Balancing</h2>
+	<h3>Leveling</h3>
+	<p>This project ships with a player leveling concept. A player "levels up" when they've accumulated enough points or completed enough actions to qualify for the next level.</p>
+	<p><strong>To change the player leveling strategy:</strong>
+		<ol>
+			<li>Open <span class="code">com.omni.fansoffury.level.ScoreLevelingStrategy</span> and make your changes. This default implementation increments the player's level by 0.2 whenever they score a goal.</li>
+		</ol>
+		OR
+		<ol>
+			<li>Create a new class implementing the <span class="code">com.omni.fansoffury.level.LevelingStrategy</span> interface and implement your own algorithm.</li>
+			<li>Comment out the @Component annotation in <span class="code">com.omni.fansoffury.level.ScoreLevelingStrategy</span></li>
+		</ol>
+	</p> 
+	<h3>Fan Speed Balancing</h3>
+	<p>This project ships with a fan speed balancing concept. Fan speed balancing helps players at low player levels to compete against players at higher levels. For example, a player at Level 0 receives an extra boost to their attention or meditation value when it reaches the fan controller, while a player at Level 10 receives no boost at all. A player at Level 11 actually receives negative boost - handicapping, essentially.</p>
+	<p><strong>To change the fan speed balancing strategy:</strong>
+		<ol>
+			<li>Open <span class="code">com.omni.fansoffury.balance.OffsetFanSpeedBalanceStrategyImpl</span> and make your changes. This default implementation provides a static offset to the player's actual attention or meditation value.</li>
+		</ol>
+		OR
+		<ol>
+			<li>Create a new class implementing the <span class="code">com.omni.fansoffury.balance.FanSpeedBalanceStrategy</span> interface and implement your own algorithm.</li>
+			<li>Comment out the @Component annotation in <span class="code">com.omni.fansoffury.balance.OffsetFanSpeedBalanceStrategyImpl</span></li>
+		</ol>
+	</p> 
 </body>
 </html>

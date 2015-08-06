@@ -18,7 +18,7 @@
 /* ---------------------------------------------------------------------- */
 
 CREATE TABLE player (
-    qr_code CHARACTER VARYING(40)  NOT NULL,
+    qr_code CHARACTER VARYING(255)  NOT NULL,
     CONSTRAINT PK_player PRIMARY KEY (qr_code)
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE player (
 
 CREATE TABLE player_session (
     id SERIAL  NOT NULL,
-    qr_code CHARACTER VARYING(10)  NOT NULL,
+    qr_code CHARACTER VARYING(255)  NOT NULL,
     start_datetime TIMESTAMP  NOT NULL,
     end_datetime TIMESTAMP,
     headset CHARACTER VARYING(20)  NOT NULL,

@@ -62,7 +62,7 @@ public class FanControllerSocketListener extends TextWebSocketHandler {
 
 		// TODO Remove when going live
 		// Start generating fake data
-		if(null == fakeDataThread) (fakeDataThread = new FakeScoreChangeThread()).start();
+		//if(null == fakeDataThread) (fakeDataThread = new FakeScoreChangeThread()).start();
 	}
 
 	@Override

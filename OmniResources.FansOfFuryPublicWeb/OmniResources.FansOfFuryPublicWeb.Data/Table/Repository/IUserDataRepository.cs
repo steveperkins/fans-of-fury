@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
 {
@@ -7,6 +8,11 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
     /// </summary>
     public interface IUserDataRepository : ITableRepository<UserData>
     {
+        /// <summary>
+        /// Returns all registered users in the system
+        /// </summary>
+        Task<List<UserData>> Get();
+
         /// <summary>
         /// Gets a user by user ID
         /// </summary>

@@ -19,14 +19,6 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table.Repository
         }
 
         /// <summary>
-        /// Gets the most recent survey response for the given user ID
-        /// </summary>
-        public async Task<SurveyResponse> GetCurrent(string userId)
-        {
-            return await Table.FirstOrDefaultAsync(x => x.UserId == userId && x.Authenticated);
-        }
-
-        /// <summary>
         /// Gets all SurveyResponses by user ID
         /// </summary>
         public async Task<List<SurveyResponse>> Get(string userId)

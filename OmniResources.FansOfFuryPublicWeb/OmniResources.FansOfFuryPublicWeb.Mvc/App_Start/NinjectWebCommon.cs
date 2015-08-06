@@ -1,9 +1,11 @@
 using System;
 using System.Configuration;
 using System.Web;
+using System.Web.Http;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
+using Ninject.Web.WebApi;
 using OmniResources.FansOfFuryPublicWeb.Data.Table.Repository;
 using OmniResources.FansOfFuryPublicWeb.Mvc;
 using WebActivatorEx;
@@ -48,6 +50,8 @@ namespace OmniResources.FansOfFuryPublicWeb.Mvc
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
                 RegisterServices(kernel);
+
+                GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver(kernel);
                 return kernel;
             }
             catch

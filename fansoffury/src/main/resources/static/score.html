@@ -270,7 +270,10 @@ function eegChanged(eegChangedEvent) {
     // Update graph
     headset.graph.refresh(eegChangedEvent.value);    
     faceSelector = '#side' + headset.deviceId + '-face img';
-    faceImg = '/img/face' + (Math.floor(eegChangedEvent.value / 20) * 20) + '.png';
+    curScore = eegChangedEvent.value;
+    if (curScore > 99) // We don't have a face100
+    	curScore = 99;
+    faceImg = '/img/face' + (Math.floor(curScore / 20) * 20) + '.png';
     $(faceSelector).attr('src', faceImg);
     console.log("Displaying " + eegChangedEvent.eventType + " value " + eegChangedEvent.value + " for headset " + headset.number);
     displayPlayerData(headset);

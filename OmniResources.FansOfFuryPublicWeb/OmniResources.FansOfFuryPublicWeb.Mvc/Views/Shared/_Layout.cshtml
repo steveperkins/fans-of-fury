@@ -3,11 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Fans of Fury!</title>
+    <title>@ViewBag.Title | Omni Resources, Inc.</title>
+    <link href="//fonts.googleapis.com/css?family=Oswald:400,700,300" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+    <link rel="icon" href="@Url.Content("~/Content/Site.css")" type="image/x-icon" />
     @Styles.Render("~/Content/css")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -15,18 +18,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Fans of Fury!", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a href="/"><img src="@Url.Content("~/Content/omni_logo_web1.png")" alt="Omni Resources" class="navbar-brand" style="padding:5px;margin-left:50px;" /></a>
             </div>
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav pull-right">
+                    <li><a href="http://www.omniresources.com/about">ABOUT</a></li>
+                    <li><a href="http://www.omniresources.com/expertise">EXPERTISE</a></li>
+                    <li><a href="http://www.omniresources.com/our-process">PROCESS</a></li>
+                    <li><a href="http://www.omniresources.com/our-portfolio">PORTFOLIO</a></li>
+                    <li><a href="http://www.omniresources.com/careers">CAREERS</a></li>
+                    <li><a href="http://www.omniresources.com/fans-of-fury">FANS OF FURY</a></li>
                 </ul>
-            </div>*@
+            </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container-fluid body-content">
         @RenderBody()
     </div>
 

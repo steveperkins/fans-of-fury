@@ -54,8 +54,8 @@ public class FanControllerServiceImpl implements FanControllerService {
 			Double alteredPercentage = new Double(percentage);
 			
 			// Convert percentage to real analog values the device can understand
-			Double analogValue = percentageToAnalog(alteredPercentage, device);
-			alteredPercentage = analogValue;
+			//Double analogValue = percentageToAnalog(alteredPercentage, device);
+			//alteredPercentage = analogValue;
 			
 			logger.debug("Changing fan speed for Device {} to {} (originally {})", device.getId(), alteredPercentage, percentage);
 			FanSpeedChangeEvent event = new FanSpeedChangeEvent(device, alteredPercentage);
@@ -63,14 +63,12 @@ public class FanControllerServiceImpl implements FanControllerService {
 		}
 		
 	}
-	
+
 	protected Double percentageToAnalog(Double percentage, Device fanDevice) {
+		Double analogValue = 10 + (percentage * 0.7);
 		if(percentage >= fanDevice.getMaxInputValue()) return fanDevice.getMaxInputValue();
 		if(percentage <= fanDevice.getMinInputValue()) return fanDevice.getMinInputValue();
 		
-		Double delta = fanDevice.getMaxInputValue() - fanDevice.getMinInputValue() + 1;
-		Double analogValue = (percentage / 100) * delta;
-		analogValue += fanDevice.getMinInputValue();
 		return analogValue;
 		
 	}
