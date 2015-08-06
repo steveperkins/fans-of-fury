@@ -6,7 +6,7 @@
     <img src="@Url.Content("~/Content/fof-scores.jpg")" class="img-responsive" alt="Fans of Fury High Scores">
 </div>
 
-@Html.Partial("_RelatedLinks")
+@Html.Partial("_RelatedLinks", new ViewDataDictionary{ { "HideScoreboard", true } })
 
 <div class="row">
     <div class="col-md-10 col-md-offset-1">

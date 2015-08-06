@@ -3,7 +3,10 @@
         <span style="color:#fff;">RELATED LINKS:</span>
         <a style="color:#3F3F3F;" href="http://www.omniresources.com/fans-of-fury-parts-list/">PARTS LIST</a> &middot;
         <a style="color:#3F3F3F;" href="http://www.omniresources.com/fans-of-fury-how-we-built-it/">HOW WE BUILT IT</a> &middot;
-        <a style="color:#3F3F3F;" href="http://www.omniresources.com/mindfulness-meditation/">MEDITATION &amp; MINDFULNESS TIPS</a> &middot;
-        <a style="color:#3F3F3F;" href="/">SCOREBOARD</a>
+        <a style="color:#3F3F3F;" href="http://www.omniresources.com/mindfulness-meditation/">MEDITATION &amp; MINDFULNESS TIPS</a>
+        @if (ViewData["HideScoreboard"] == null)
+        {
+            <text>&middot; <a style="color:#3F3F3F;" href="/">SCOREBOARD</a></text>
+        }
     </div>
 </div>
