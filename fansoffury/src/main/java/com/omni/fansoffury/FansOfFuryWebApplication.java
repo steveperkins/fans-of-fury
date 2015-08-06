@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -21,6 +22,7 @@ import com.omni.fansoffury.socket.handler.ScoreSocketListener;
 @ComponentScan
 @EnableWebMvc
 @EnableWebSocket
+@EnableScheduling
 //@SpringBootApplication
 public class FansOfFuryWebApplication extends WebMvcAutoConfiguration implements WebSocketConfigurer {
 
