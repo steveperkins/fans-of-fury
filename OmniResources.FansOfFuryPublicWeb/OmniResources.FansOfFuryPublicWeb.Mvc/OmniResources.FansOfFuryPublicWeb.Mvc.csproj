@@ -176,6 +176,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\fof-game.jpg" />
     <Content Include="Content\fof-scores.jpg" />
+    <Content Include="Content\omni_favicon1.png" />
     <Content Include="Content\omni_logo_web1.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
