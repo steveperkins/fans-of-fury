@@ -7,3 +7,4 @@ packages
 RemoteSystemsTempFiles
 .settings
 /OmniResources.FansOfFuryPublicWeb/OmniResources.FansOfFuryPublicWeb.Mvc/TransformWebConfig
+/.recommenders
