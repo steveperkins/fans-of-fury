@@ -18,3 +18,7 @@
 ul.navbar-nav li a:hover {
     border-bottom: 1px solid #e57200;
 }
+
+.navbar-default {
+    background-color: #fff;
+}
