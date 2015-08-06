@@ -7,8 +7,10 @@
     <img src="@Url.Content("~/Content/fof-game.jpg")" class="img-responsive" alt="Fans of Fury High Scores">
 </div>
 
+@Html.Partial("_RelatedLinks")
+
 <div class="row">
-    <div class="col-md-9" style="padding-top:25px;">
+    <div class="col-md-10 col-md-offset-1" style="padding-top:25px;">
         @if (!ViewContext.ViewData.ModelState.IsValid)
         {
             <div class="alert alert-danger" role="alert">
@@ -84,8 +86,5 @@
                 </div>
             </div>
         }
-    </div>
-    <div class="col-md-3">
-        @Html.Partial("_RelatedLinks")
     </div>
 </div>

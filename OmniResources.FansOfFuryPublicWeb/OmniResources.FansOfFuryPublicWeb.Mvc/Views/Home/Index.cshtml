@@ -6,8 +6,10 @@
     <img src="@Url.Content("~/Content/fof-scores.jpg")" class="img-responsive" alt="Fans of Fury High Scores">
 </div>
 
+@Html.Partial("_RelatedLinks")
+
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-10 col-md-offset-1">
         <h2>High Scores!</h2>
         <table class="table table-striped">
             <thead>
@@ -30,8 +32,5 @@
                 </tr>
             </tbody>
         </table>
-    </div>
-    <div class="col-md-3">
-        @Html.Partial("_RelatedLinks")
     </div>
 </div>
