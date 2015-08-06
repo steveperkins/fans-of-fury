@@ -1,26 +1,22 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using OmniResources.FansOfFuryPublicWeb.Data.Table.Repository;
 
 namespace OmniResources.FansOfFuryPublicWeb.Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        private readonly IUserDataRepository _userDataRepo;
+
+        public HomeController(IUserDataRepository userDataRepo)
         {
-            return View();
+            _userDataRepo = userDataRepo;
         }
 
-        public ActionResult About()
+        public async Task<ActionResult> Index()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            return View((await _userDataRepo.Get()).OrderByDescending(x => x.Score).ToList());
         }
     }
 }

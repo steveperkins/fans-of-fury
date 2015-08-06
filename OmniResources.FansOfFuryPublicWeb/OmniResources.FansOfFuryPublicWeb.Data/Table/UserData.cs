@@ -1,4 +1,5 @@
-﻿using WindowsAzure.Table.Attributes;
+﻿using System;
+using WindowsAzure.Table.Attributes;
 
 namespace OmniResources.FansOfFuryPublicWeb.Data.Table
 {
@@ -27,5 +28,18 @@ namespace OmniResources.FansOfFuryPublicWeb.Data.Table
         /// Gets or sets a (BCrypt encrypted) password for the user that they must enter if they want to have their name on the scoreboard
         /// </summary>
         public string HashedPassword { get; set; }
+
+        /// <summary>
+        /// Returns the username to show on the dashboard
+        /// </summary>
+        public string DisplayScoreboardName()
+        {
+            if (string.IsNullOrWhiteSpace(this.ScoreboardName))
+                return this.UserId.Substring(0, Math.Min(this.UserId.Length, 8));
+
+            // TODO: Filter out dirty words!
+
+            return this.ScoreboardName.Trim();
+        }
     }
 }
