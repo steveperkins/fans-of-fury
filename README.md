@@ -22,7 +22,7 @@ There are four projects in this repository:
  </thead>
  <tbody>
   <tr><td>fansoffury</td><td>Fans of Fury server</td></tr>
-  <tr><td>fansoffury.pi</td><td>Python code to be run on Raspberry Pi (motor/score controL)</td></tr>
+  <tr><td>fansoffury.py</td><td>Python code to be run on Raspberry Pi (motor/score controL)</td></tr>
   <tr><td>fansoffury.mobile</td><td>Mobile app (player control)</td></tr>
   <tr><td>OmniResources.FansOfFuryPublicWeb</td><td>High score website</td></tr>
  </tbody>
